@@ -114,11 +114,12 @@ export const computeDailyHealthIndex = (loggedMeals = [], loggedActivities = [],
   const hydrationScore = Math.round(hydrationRatio * 100);
 
   // E. Calorie Trend Score (Weight: 10%)
+  // Only penalise over-eating (>110% of target), not under-eating (user may not have logged all meals yet)
   const netCalories = totalCalories - totalBurnedCalories;
-  const calDiff = Math.abs(netCalories - targets.targetCalories);
   let calorieTrendScore = 100;
-  if (calDiff > 250) {
-    calorieTrendScore = Math.max(20, 100 - Math.round((calDiff - 250) / 10));
+  if (netCalories > targets.targetCalories * 1.10) {
+    const overageKcal = netCalories - targets.targetCalories;
+    calorieTrendScore = Math.max(20, 100 - Math.round(overageKcal / 15));
   }
 
   // --- FINAL COMPOSITE HEALTH INDEX ---
@@ -190,6 +191,7 @@ export const computeDailyHealthIndex = (loggedMeals = [], loggedActivities = [],
     finalScore,
     healthIndexScore: finalScore,
     grade,
+    waterGlasses,
 
     totals: {
       calories: Math.round(totalCalories),

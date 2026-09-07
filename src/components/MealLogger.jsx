@@ -24,16 +24,24 @@ export const MealLogger = ({ loggedMeals, onAddMeal, onDeleteMeal }) => {
   };
 
   const handleSelectFood = (food) => {
+    const qty = Number(selectedQty) || 1;
     onAddMeal({
       foodId: food.id,
+      name: food.name,
       mealType: activeModalSlot,
-      qty: selectedQty,
+      qty: qty,
+      calories: Math.round(food.calories * qty),
+      protein: Math.round(food.protein * qty),
+      carbs: Math.round(food.carbs * qty),
+      fat: Math.round(food.fat * qty),
+      fiber: Math.round((food.fiber || 0) * qty),
       timestamp: new Date().toISOString()
     });
     setActiveModalSlot(null);
     setSearchQuery('');
     setSelectedQty(1);
   };
+
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>

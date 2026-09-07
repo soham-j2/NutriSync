@@ -14,8 +14,8 @@ export const QUICK_PROMPTS = [
 
 const GEMINI_MODELS = [
   'gemini-2.5-flash',
-  'gemini-3.6-flash',
-  'gemini-flash-latest'
+  'gemini-1.5-flash',
+  'gemini-1.5-flash-latest'
 ];
 
 /**
@@ -32,8 +32,9 @@ export async function callGeminiApi(userQuery, healthAnalysis, loggedMeals = [],
   const score = healthAnalysis?.finalScore ?? healthAnalysis?.healthIndexScore ?? 50;
 
   const totals = healthAnalysis?.totals || { calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0, burnedCalories: 0, exerciseMinutes: 0, junkItemCount: 0 };
-  const targets = healthAnalysis?.targets || { targetCalories: 2000, targetProtein: 120, targetCarbs: 250, targetFat: 60, targetFiber: 28, targetWaterGlasses: 10 };
-  const waterGlasses = healthAnalysis?.waterGlasses || 0;
+  const targets = healthAnalysis?.targets || { targetCalories: 2000, targetProtein: 120, targetCarbs: 250, targetFat: 60, targetFiber: 28, targetWaterGlasses: 8 };
+  // waterGlasses is now available at top-level AND inside totals
+  const waterGlasses = healthAnalysis?.waterGlasses ?? healthAnalysis?.totals?.waterGlasses ?? 0;
 
   const mealsText = loggedMeals.length > 0 
     ? loggedMeals.map(m => `- ${m.name}: ${m.calories} kcal, ${m.protein}g protein, ${m.carbs}g carbs, ${m.fat}g fat, ${m.fiber || 0}g fiber`).join('\n')
@@ -46,14 +47,15 @@ export async function callGeminiApi(userQuery, healthAnalysis, loggedMeals = [],
   const promptText = `
 You are NutriAI, an elite, highly encouraging, and scientific nutrition & health coach built inside the NutriVista health tracking app.
 Respond concisely using rich Markdown (headers with ###, bullet points with •, bold text **text**).
+IMPORTANT: When recommending meals or foods, ALWAYS use specific Indian dish names (e.g., "Paneer Tikka", "Moong Dal Chilla", "Rajma Chawal", "Sprouts Salad", "Grilled Fish", "Chicken Curry with Brown Rice"). Never use generic phrases like 'high-protein meal' without naming the actual dish.
 
 LIVE USER DATA:
 - User Profile: ${userProfile.gender || 'male'}, ${userProfile.age || 21} years old, ${userProfile.weight || 68} kg, ${userProfile.height || 175} cm tall. Primary Goal: ${userProfile.goal || 'maintain'}.
 - Daily Composite Health Index Score: ${score}/100.
-- Calorie Intake: ${totals.calories} kcal (Target: ${targets.targetCalories} kcal).
+- Calorie Intake So Far: ${totals.calories} kcal (Daily Target: ${targets.targetCalories} kcal; ${targets.targetCalories - totals.calories} kcal remaining for the day).
 - Exercise Burned: ${totals.burnedCalories} kcal (${totals.exerciseMinutes} active mins).
 - Net Calories (Intake - Burned): ${totals.calories - totals.burnedCalories} kcal.
-- Protein Intake: ${totals.protein}g (Target: ${targets.targetProtein}g).
+- Protein Intake: ${totals.protein}g (Target: ${targets.targetProtein}g; ${Math.max(0, targets.targetProtein - totals.protein)}g still needed).
 - Carbohydrates: ${totals.carbs}g (Target: ${targets.targetCarbs}g).
 - Dietary Fat: ${totals.fat}g (Target: ${targets.targetFat}g).
 - Fiber: ${totals.fiber}g (Target: ${targets.targetFiber}g).
@@ -68,7 +70,7 @@ ${workoutsText}
 
 USER QUESTION: "${userQuery}"
 
-Provide an intelligent, personalized, and actionable response based directly on the above real user data. Be concise, practical, and highly motivating!
+Provide an intelligent, personalized, and actionable response based directly on the above real user data. Always reference actual logged meals by name. When suggesting foods, name specific Indian dishes. Be concise, practical, and highly motivating!
 `;
 
   // Try each supported model until one succeeds
