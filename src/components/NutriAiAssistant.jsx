@@ -203,16 +203,16 @@ Ask me anything about your real meals, macros, or a personalised diet plan!`;
         }}
         className="nutri-ai-modal"
       >
-        {/* ── Dark Header ── */}
+        {/* ── Sleek Light Header ── */}
         <div style={{
-          padding: '14px 16px',
-          background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 60%, #312e81 100%)',
-          color: '#ffffff',
+          padding: '14px 18px',
+          background: 'linear-gradient(135deg, #ffffff 0%, #f5f2fc 100%)',
+          color: 'var(--text-main)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
           flexShrink: 0,
-          borderBottom: '1px solid rgba(255,255,255,0.08)'
+          borderBottom: '1px solid var(--border-subtle)'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             {/* NutriAI logo icon */}
@@ -239,18 +239,18 @@ Ask me anything about your real meals, macros, or a personalised diet plan!`;
 
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <h3 style={{ fontSize: '16px', fontWeight: '800', margin: 0, color: '#ffffff', letterSpacing: '-0.02em' }}>
+                <h3 style={{ fontSize: '16px', fontWeight: '800', margin: 0, color: 'var(--text-main)', letterSpacing: '-0.02em' }}>
                   NutriAI Health Assistant
                 </h3>
                 <span style={{
                   fontSize: '10px', fontWeight: '800', padding: '2px 7px', borderRadius: '10px',
-                  background: 'rgba(16,185,129,0.2)', color: '#34d399', border: '1px solid rgba(52,211,153,0.3)'
+                  background: 'var(--accent-emerald-bg)', color: 'var(--accent-emerald)', border: '1px solid rgba(16,185,129,0.3)'
                 }}>
-                  LIVE
+                  LIVE AI
                 </span>
               </div>
-              <span style={{ fontSize: '11px', color: '#c7d2fe', display: 'block', marginTop: '1px' }}>
-                {loggedMeals.length} meals logged · Score: <strong>{healthAnalysis?.finalScore ?? 50}/100</strong>
+              <span style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'block', marginTop: '1px' }}>
+                {loggedMeals.length} meals logged · Score: <strong style={{ color: 'var(--primary-purple)' }}>{healthAnalysis?.finalScore ?? 50}/100</strong>
               </span>
             </div>
           </div>
@@ -261,7 +261,7 @@ Ask me anything about your real meals, macros, or a personalised diet plan!`;
               onClick={handleClearChat}
               title="Clear chat"
               style={{
-                background: 'rgba(255,255,255,0.1)', border: 'none', color: '#ffffff',
+                background: 'var(--bg-card-subtle)', border: '1px solid var(--border-subtle)', color: 'var(--text-muted)',
                 borderRadius: '50%', width: '32px', height: '32px', display: 'flex',
                 alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s ease'
               }}
@@ -272,7 +272,7 @@ Ask me anything about your real meals, macros, or a personalised diet plan!`;
             <button
               onClick={onClose}
               style={{
-                background: 'rgba(255,255,255,0.1)', border: 'none', color: '#ffffff',
+                background: 'var(--bg-card-subtle)', border: '1px solid var(--border-subtle)', color: 'var(--text-main)',
                 borderRadius: '50%', width: '32px', height: '32px', display: 'flex',
                 alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s ease'
               }}
@@ -285,7 +285,7 @@ Ask me anything about your real meals, macros, or a personalised diet plan!`;
         {/* ── Quick Prompt Pills ── */}
         <div style={{
           padding: '10px 14px',
-          background: '#f8fafc',
+          background: 'var(--bg-main)',
           borderBottom: '1px solid var(--border-subtle)',
           display: 'flex',
           gap: '8px',
@@ -302,13 +302,13 @@ Ask me anything about your real meals, macros, or a personalised diet plan!`;
                 padding: '6px 13px', borderRadius: '20px', background: '#ffffff',
                 border: '1px solid var(--border-subtle)', color: 'var(--primary-purple)',
                 fontSize: '12px', fontWeight: '700', cursor: 'pointer', whiteSpace: 'nowrap',
-                boxShadow: '0 2px 6px rgba(0,0,0,0.04)', transition: 'all 0.2s ease',
+                boxShadow: '0 2px 6px rgba(124,92,191,0.06)', transition: 'all 0.2s ease',
                 flexShrink: 0
               }}
               onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--primary-purple)'; e.currentTarget.style.color = '#ffffff'; }}
               onMouseLeave={(e) => { e.currentTarget.style.background = '#ffffff'; e.currentTarget.style.color = 'var(--primary-purple)'; }}
             >
-              <Zap size={12} />
+              <Zap size={12} color="var(--accent-cta)" />
               <span>{prompt.text}</span>
             </button>
           ))}
@@ -322,7 +322,7 @@ Ask me anything about your real meals, macros, or a personalised diet plan!`;
           display: 'flex',
           flexDirection: 'column',
           gap: '14px',
-          background: 'linear-gradient(180deg,#f8fafc 0%,#ffffff 100%)'
+          background: 'linear-gradient(180deg, var(--bg-main) 0%, #ffffff 100%)'
         }}>
           {messages.map((msg) => (
             <div key={msg.id} style={{ display: 'flex', flexDirection: 'column', alignItems: msg.sender === 'user' ? 'flex-end' : 'flex-start' }}>
@@ -333,9 +333,9 @@ Ask me anything about your real meals, macros, or a personalised diet plan!`;
                 {/* Avatar */}
                 <div style={{
                   width: '32px', height: '32px', borderRadius: '50%', flexShrink: 0,
-                  background: msg.sender === 'user' ? 'linear-gradient(135deg,#9333ea,#7e22ce)' : '#1e1b4b',
+                  background: msg.sender === 'user' ? 'linear-gradient(135deg, var(--accent-cta), #E85D25)' : 'var(--primary-purple)',
                   color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  boxShadow: '0 4px 10px rgba(0,0,0,0.1)', overflow: 'hidden'
+                  boxShadow: msg.sender === 'user' ? '0 4px 10px var(--accent-cta-glow)' : '0 4px 10px var(--primary-glow)', overflow: 'hidden'
                 }}>
                   {msg.sender === 'user'
                     ? <User size={15} />
@@ -348,10 +348,10 @@ Ask me anything about your real meals, macros, or a personalised diet plan!`;
                 <div style={{
                   padding: '12px 16px',
                   borderRadius: msg.sender === 'user' ? '20px 20px 4px 20px' : '20px 20px 20px 4px',
-                  background: msg.sender === 'user' ? 'linear-gradient(135deg,#9333ea,#7e22ce)' : '#ffffff',
+                  background: msg.sender === 'user' ? 'linear-gradient(135deg, #7C5CBF, #9575CD)' : '#ffffff',
                   color: msg.sender === 'user' ? '#ffffff' : 'var(--text-main)',
                   border: msg.sender === 'user' ? 'none' : '1px solid var(--border-subtle)',
-                  boxShadow: msg.sender === 'user' ? '0 6px 18px var(--primary-glow)' : '0 4px 18px rgba(0,0,0,0.04)',
+                  boxShadow: msg.sender === 'user' ? '0 6px 18px var(--primary-glow)' : 'var(--shadow-soft)',
                   fontSize: '13px', lineHeight: '1.6'
                 }}>
                   {msg.sender === 'user' ? msg.text : renderFormattedText(msg.text)}
@@ -418,12 +418,12 @@ Ask me anything about your real meals, macros, or a personalised diet plan!`;
             disabled={!inputQuery.trim() || isThinking}
             style={{
               width: '44px', height: '44px', borderRadius: '50%', flexShrink: 0,
-              background: (inputQuery.trim() && !isThinking) ? 'linear-gradient(135deg,#9333ea,#7e22ce)' : 'var(--bg-card-subtle)',
+              background: (inputQuery.trim() && !isThinking) ? 'linear-gradient(135deg, var(--accent-cta), #E85D25)' : 'var(--bg-card-subtle)',
               color: (inputQuery.trim() && !isThinking) ? '#ffffff' : 'var(--text-muted)',
               border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center',
               cursor: (inputQuery.trim() && !isThinking) ? 'pointer' : 'default',
               transition: 'all 0.2s ease',
-              boxShadow: (inputQuery.trim() && !isThinking) ? '0 4px 12px var(--primary-glow)' : 'none'
+              boxShadow: (inputQuery.trim() && !isThinking) ? '0 4px 14px var(--accent-cta-glow)' : 'none'
             }}
           >
             <Send size={18} />

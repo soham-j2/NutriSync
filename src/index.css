@@ -1,47 +1,59 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap');
 
 :root {
-  --bg-gradient-start: #f5f3ff;
-  --bg-gradient-end: #ede9fe;
-  --bg-main: #f8f6ff;
-  
-  --bg-card: #ffffff;
-  --bg-card-subtle: #f5f3ff;
-  --bg-card-hover: #faf5ff;
-  
-  --border-subtle: rgba(147, 51, 234, 0.12);
-  --border-hover: rgba(147, 51, 234, 0.3);
+  /* ── Lavender / Lilac Palette (inspired by Docpocket UI) ── */
+  --bg-gradient-start: #f0edfb;
+  --bg-gradient-end:   #e8e0f7;
+  --bg-main:           #f5f2fc;
 
-  --primary-purple: #9333ea;
-  --primary-violet: #8b5cf6;
-  --primary-purple-light: #a855f7;
-  --primary-glow: rgba(147, 51, 234, 0.18);
-  
-  --accent-emerald: #10b981;
-  --accent-emerald-bg: rgba(16, 185, 129, 0.1);
-  --accent-amber: #f59e0b;
-  --accent-amber-bg: rgba(245, 158, 11, 0.1);
-  --accent-rose: #f43f5e;
-  --accent-rose-bg: rgba(244, 63, 94, 0.1);
-  --accent-cyan: #06b6d4;
-  --accent-cyan-bg: rgba(6, 182, 212, 0.1);
+  --bg-card:           #ffffff;
+  --bg-card-subtle:    #f0edfb;
+  --bg-card-hover:     #ece6f9;
 
-  --text-main: #1e1b4b;
-  --text-muted: #6b7280;
-  --text-purple-muted: #6d28d9;
-  --text-light: #ffffff;
+  --border-subtle:     rgba(124, 92, 191, 0.13);
+  --border-hover:      rgba(124, 92, 191, 0.32);
 
-  --radius-sm: 10px;
-  --radius-md: 16px;
-  --radius-lg: 20px;
-  --radius-xl: 28px;
+  /* Primary – medium lavender */
+  --primary-purple:        #7C5CBF;
+  --primary-violet:        #9575CD;
+  --primary-purple-light:  #AB8FD8;
+  --primary-glow:          rgba(124, 92, 191, 0.20);
+
+  /* CTA / Action accent – warm orange (matches reference "Get Appointment" btn) */
+  --accent-cta:        #FF6B35;
+  --accent-cta-bg:     rgba(255, 107, 53, 0.10);
+  --accent-cta-glow:   rgba(255, 107, 53, 0.28);
+
+  /* Status accents */
+  --accent-emerald:    #10b981;
+  --accent-emerald-bg: rgba(16, 185, 129, 0.10);
+  --accent-amber:      #F59E0B;
+  --accent-amber-bg:   rgba(245, 158, 11, 0.10);
+  --accent-rose:       #F43F5E;
+  --accent-rose-bg:    rgba(244, 63, 94,  0.10);
+  --accent-cyan:       #06B6D4;
+  --accent-cyan-bg:    rgba(6,  182, 212, 0.10);
+
+  /* Typography */
+  --text-main:         #2D1B69;   /* deep violet – dark heading */
+  --text-muted:        #7A7A9D;   /* purple-grey */
+  --text-purple-muted: #7C5CBF;
+  --text-light:        #ffffff;
+
+  /* Radii */
+  --radius-sm:   10px;
+  --radius-md:   16px;
+  --radius-lg:   20px;
+  --radius-xl:   28px;
   --radius-full: 9999px;
 
-  --shadow-soft: 0 8px 24px -4px rgba(147, 51, 234, 0.08), 0 2px 8px rgba(0, 0, 0, 0.02);
-  --shadow-hover: 0 16px 36px -8px rgba(147, 51, 234, 0.15);
+  /* Shadows */
+  --shadow-soft:  0 8px 24px -4px rgba(124, 92, 191, 0.10), 0 2px 8px rgba(0,0,0,0.03);
+  --shadow-hover: 0 16px 36px -8px rgba(124, 92, 191, 0.18);
 
+  /* Fonts */
   --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body:    'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 * {
@@ -58,7 +70,7 @@ html, body {
 }
 
 body {
-  background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 50%, #fae8ff 100%);
+  background: linear-gradient(150deg, #f0edfb 0%, #e8e0f7 45%, #f3eeff 100%);
   background-attachment: fixed;
   color: var(--text-main);
   font-family: var(--font-body);
@@ -107,13 +119,13 @@ h1, h2, h3, h4, h5, h6 {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(255, 255, 255, 0.94);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border-subtle);
   padding: 8px 12px;
   margin-bottom: 16px;
-  box-shadow: 0 4px 20px rgba(147, 51, 234, 0.05);
+  box-shadow: 0 4px 20px rgba(124, 92, 191, 0.07);
 }
 
 @media (min-width: 768px) {
@@ -159,7 +171,7 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   align-items: center;
   gap: 4px;
-  background: rgba(147, 51, 234, 0.06);
+  background: rgba(124, 92, 191, 0.07);
   padding: 4px;
   border-radius: var(--radius-full);
   width: 100%;
@@ -216,7 +228,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .web-tab-btn.active {
-  background: var(--primary-purple);
+  background: linear-gradient(135deg, #7C5CBF 0%, #9575CD 100%);
   color: #ffffff;
   box-shadow: 0 4px 14px var(--primary-glow);
 }
@@ -247,7 +259,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Action Buttons */
 .btn-purple {
-  background: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%);
+  background: linear-gradient(135deg, #FF6B35 0%, #E85D25 100%);
   color: #ffffff;
   border: none;
   padding: 10px 16px;
@@ -256,7 +268,7 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
   font-size: 13px;
   cursor: pointer;
-  box-shadow: 0 6px 18px var(--primary-glow);
+  box-shadow: 0 6px 18px var(--accent-cta-glow);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -278,9 +290,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn-subtle {
-  background: rgba(147, 51, 234, 0.08);
+  background: rgba(124, 92, 191, 0.09);
   color: var(--primary-purple);
-  border: 1px solid rgba(147, 51, 234, 0.15);
+  border: 1px solid rgba(124, 92, 191, 0.18);
   padding: 7px 12px;
   border-radius: var(--radius-full);
   font-weight: 700;
@@ -322,7 +334,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .chip-purple {
-  background: rgba(147, 51, 234, 0.12);
+  background: rgba(124, 92, 191, 0.13);
   color: var(--primary-purple);
 }
 
@@ -353,8 +365,8 @@ h1, h2, h3, h4, h5, h6 {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(30, 27, 75, 0.5);
-  backdrop-filter: blur(8px);
+  background: rgba(45, 27, 105, 0.45);
+  backdrop-filter: blur(10px);
   z-index: 200;
   display: flex;
   justify-content: center;
@@ -379,7 +391,7 @@ h1, h2, h3, h4, h5, h6 {
   max-height: 85vh;
   overflow-y: auto;
   padding: 18px 16px 28px 16px;
-  box-shadow: 0 25px 50px -12px rgba(147, 51, 234, 0.25);
+  box-shadow: 0 25px 50px -12px rgba(124, 92, 191, 0.22);
   animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 

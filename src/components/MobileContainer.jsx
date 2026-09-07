@@ -30,15 +30,16 @@ export const MobileContainer = ({
         {/* Top Header Bar */}
         <div style={{
           padding: '12px 18px',
-          background: 'rgba(18, 24, 33, 0.85)',
-          backdropFilter: 'blur(12px)',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
+          background: 'rgba(255, 255, 255, 0.97)',
+          backdropFilter: 'blur(20px)',
+          borderBottom: '1px solid rgba(124, 92, 191, 0.12)',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
           position: 'sticky',
           top: 0,
-          zIndex: 40
+          zIndex: 40,
+          boxShadow: '0 2px 12px rgba(124, 92, 191, 0.08)'
         }}>
           {/* Logo & App Name */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -46,16 +47,16 @@ export const MobileContainer = ({
               width: '32px',
               height: '32px',
               borderRadius: '10px',
-              background: 'linear-gradient(135deg, #10b981 0%, #06b6d4 100%)',
+              background: 'linear-gradient(135deg, #7C5CBF 0%, #AB8FD8 100%)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 0 12px rgba(16, 185, 129, 0.4)'
+              boxShadow: '0 0 12px rgba(124, 92, 191, 0.35)'
             }}>
               <Sparkles size={18} color="#ffffff" />
             </div>
             <div>
-              <h1 style={{ fontSize: '18px', fontWeight: '800', margin: 0, background: 'linear-gradient(90deg, #ffffff, #10b981)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+              <h1 style={{ fontSize: '18px', fontWeight: '800', margin: 0, background: 'linear-gradient(90deg, #2D1B69, #7C5CBF)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                 NutriLoop
               </h1>
               <span style={{ fontSize: '10px', color: 'var(--text-muted)', display: 'block', marginTop: '-3px' }}>
@@ -70,10 +71,10 @@ export const MobileContainer = ({
             <div style={{ position: 'relative' }}>
               <button 
                 className="btn-secondary"
-                style={{ padding: '6px 10px', fontSize: '11px', borderRadius: '20px', borderColor: 'var(--primary-emerald)' }}
+                style={{ padding: '6px 10px', fontSize: '11px', borderRadius: '20px', borderColor: 'var(--primary-purple)', color: 'var(--primary-purple)' }}
                 onClick={() => setShowPresetDropdown(!showPresetDropdown)}
               >
-                <Sparkles size={12} color="var(--primary-emerald)" />
+                <Sparkles size={12} color="var(--primary-purple)" />
                 <span>Demo Preset</span>
               </button>
 
@@ -83,11 +84,11 @@ export const MobileContainer = ({
                   top: '110%',
                   right: 0,
                   width: '230px',
-                  background: '#131922',
-                  border: '1px solid rgba(255, 255, 255, 0.15)',
+                  background: '#ffffff',
+                  border: '1px solid rgba(124, 92, 191, 0.15)',
                   borderRadius: '14px',
                   padding: '8px',
-                  boxShadow: '0 12px 30px rgba(0,0,0,0.7)',
+                  boxShadow: '0 12px 30px rgba(124, 92, 191, 0.18)',
                   zIndex: 100
                 }}>
                   <div style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-muted)', padding: '4px 8px' }}>
@@ -102,7 +103,7 @@ export const MobileContainer = ({
                         padding: '8px',
                         background: 'transparent',
                         border: 'none',
-                        color: '#fff',
+                        color: 'var(--text-main)',
                         fontSize: '12px',
                         borderRadius: '8px',
                         cursor: 'pointer',
@@ -111,14 +112,14 @@ export const MobileContainer = ({
                         gap: '2px',
                         transition: 'background 0.2s'
                       }}
-                      onMouseOver={(e) => e.currentTarget.style.background = 'rgba(16, 185, 129, 0.15)'}
+                      onMouseOver={(e) => e.currentTarget.style.background = 'rgba(124, 92, 191, 0.10)'}
                       onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
                       onClick={() => {
                         onLoadPreset(preset);
                         setShowPresetDropdown(false);
                       }}
                     >
-                      <span style={{ fontWeight: '600', color: 'var(--primary-emerald)' }}>{preset.label}</span>
+                      <span style={{ fontWeight: '600', color: 'var(--primary-purple)' }}>{preset.label}</span>
                       <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{preset.description}</span>
                     </button>
                   ))}
@@ -133,12 +134,12 @@ export const MobileContainer = ({
                 width: '32px',
                 height: '32px',
                 borderRadius: '50%',
-                background: 'rgba(255, 255, 255, 0.08)',
-                border: '1px solid rgba(255, 255, 255, 0.15)',
+                background: 'rgba(124, 92, 191, 0.10)',
+                border: '1px solid rgba(124, 92, 191, 0.22)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: 'var(--text-main)',
+                color: 'var(--primary-purple)',
                 cursor: 'pointer'
               }}
             >
