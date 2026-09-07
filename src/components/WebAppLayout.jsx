@@ -1,5 +1,5 @@
 import React from 'react';
-import { LayoutDashboard, UtensilsCrossed, Activity, TrendingUp, User, FileText, Sparkles } from 'lucide-react';
+import { LayoutDashboard, UtensilsCrossed, Activity, TrendingUp, User, FileText } from 'lucide-react';
 
 export const WebAppLayout = ({ 
   activeTab, 
@@ -54,37 +54,6 @@ export const WebAppLayout = ({
 
             {/* Right Action Controls */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              
-              {/* Ask NutriAI Navbar Button */}
-              <button
-                onClick={onOpenAiAssistant}
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  height: '40px',
-                  padding: '0 14px 0 10px',
-                  borderRadius: 'var(--radius-full)',
-                  background: 'linear-gradient(135deg, rgba(147, 51, 234, 0.12), rgba(168, 85, 247, 0.12))',
-                  border: '1px solid rgba(147, 51, 234, 0.25)',
-                  color: 'var(--primary-purple)',
-                  cursor: 'pointer',
-                  fontSize: '13px',
-                  fontWeight: '800',
-                  transition: 'all 0.2s ease'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'var(--primary-purple)';
-                  e.currentTarget.style.color = '#ffffff';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'linear-gradient(135deg, rgba(147, 51, 234, 0.12), rgba(168, 85, 247, 0.12))';
-                  e.currentTarget.style.color = 'var(--primary-purple)';
-                }}
-              >
-                <Sparkles size={15} />
-                <span>Ask NutriAI</span>
-              </button>
 
               {/* Profile Biometrics Button */}
               <button 

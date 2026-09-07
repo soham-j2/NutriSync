@@ -92,7 +92,7 @@ export const NutriAiAssistant = ({
       const waterGlasses = healthAnalysis?.waterGlasses ?? healthAnalysis?.totals?.waterGlasses ?? 0;
       const targetWater = healthAnalysis?.targets?.targetWaterGlasses ?? 8;
 
-      const welcomeText = `### 👋 Hello! I'm NutriAI powered by Google Gemini.
+      const welcomeText = `### 👋 Hello! I'm NutriAI — your personal health coach.
 
 I've loaded your live health metrics for today:
 • **Health Index Score**: **${score}/100**
@@ -250,7 +250,7 @@ Ask me anything about your real meals, macros, or a personalised diet plan!`;
                 </span>
               </div>
               <span style={{ fontSize: '11px', color: '#c7d2fe', display: 'block', marginTop: '1px' }}>
-                Gemini 2.5 Flash · {loggedMeals.length} meals · Score: <strong>{healthAnalysis?.finalScore ?? 50}/100</strong>
+                {loggedMeals.length} meals logged · Score: <strong>{healthAnalysis?.finalScore ?? 50}/100</strong>
               </span>
             </div>
           </div>
