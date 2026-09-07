@@ -17,7 +17,7 @@ export const WebAppLayout = ({
           
           {/* Top Row for Mobile (Logo + Action Buttons) */}
           <div className="nav-top-row">
-            {/* Logo & App Name NutriSync */}
+            {/* Logo & App Name NutriLoop */}
             <div 
               style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }} 
               onClick={() => setActiveTab('dashboard')}
@@ -37,13 +37,13 @@ export const WebAppLayout = ({
               }}>
                 <img 
                   src="/logo.png" 
-                  alt="NutriSync Logo" 
+                  alt="NutriLoop Logo" 
                   style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: '10px' }} 
                 />
               </div>
               <div>
                 <h1 style={{ fontSize: '20px', fontWeight: '800', margin: 0, color: 'var(--text-main)', letterSpacing: '-0.03em' }}>
-                  NutriSync
+                  NutriLoop
                 </h1>
                 <span style={{ fontSize: '11px', fontWeight: '700', color: 'var(--text-purple-muted)', display: 'block', marginTop: '-2px' }}>
                   Daily Health Index

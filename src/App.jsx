@@ -34,39 +34,39 @@ export function App() {
   const [showProfileModal, setShowProfileModal] = useState(false);
 
   const [userProfile, setUserProfile] = useState(() => {
-    const saved = localStorage.getItem('nutrisync_profile');
+    const saved = localStorage.getItem('nutriloop_profile') || localStorage.getItem('nutrisync_profile');
     return saved ? JSON.parse(saved) : DEFAULT_PROFILE;
   });
 
   const [loggedMeals, setLoggedMeals] = useState(() => {
-    const saved = localStorage.getItem('nutrisync_meals');
+    const saved = localStorage.getItem('nutriloop_meals') || localStorage.getItem('nutrisync_meals');
     return saved ? JSON.parse(saved) : ensureUniqueIds(DEMO_PRESETS.healthy.meals);
   });
 
   const [loggedActivities, setLoggedActivities] = useState(() => {
-    const saved = localStorage.getItem('nutrisync_activities');
+    const saved = localStorage.getItem('nutriloop_activities') || localStorage.getItem('nutrisync_activities');
     return saved ? JSON.parse(saved) : ensureUniqueIds(DEMO_PRESETS.healthy.activities);
   });
 
   const [waterGlasses, setWaterGlasses] = useState(() => {
-    const saved = localStorage.getItem('nutrisync_water');
+    const saved = localStorage.getItem('nutriloop_water') || localStorage.getItem('nutrisync_water');
     return saved ? JSON.parse(saved) : DEMO_PRESETS.healthy.waterGlasses;
   });
 
   useEffect(() => {
-    localStorage.setItem('nutrisync_profile', JSON.stringify(userProfile));
+    localStorage.setItem('nutriloop_profile', JSON.stringify(userProfile));
   }, [userProfile]);
 
   useEffect(() => {
-    localStorage.setItem('nutrisync_meals', JSON.stringify(loggedMeals));
+    localStorage.setItem('nutriloop_meals', JSON.stringify(loggedMeals));
   }, [loggedMeals]);
 
   useEffect(() => {
-    localStorage.setItem('nutrisync_activities', JSON.stringify(loggedActivities));
+    localStorage.setItem('nutriloop_activities', JSON.stringify(loggedActivities));
   }, [loggedActivities]);
 
   useEffect(() => {
-    localStorage.setItem('nutrisync_water', JSON.stringify(waterGlasses));
+    localStorage.setItem('nutriloop_water', JSON.stringify(waterGlasses));
   }, [waterGlasses]);
 
   const currentAnalysis = computeDailyHealthIndex(

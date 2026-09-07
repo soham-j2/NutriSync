@@ -56,7 +56,7 @@ export const MobileContainer = ({
             </div>
             <div>
               <h1 style={{ fontSize: '18px', fontWeight: '800', margin: 0, background: 'linear-gradient(90deg, #ffffff, #10b981)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                NutriVista
+                NutriLoop
               </h1>
               <span style={{ fontSize: '10px', color: 'var(--text-muted)', display: 'block', marginTop: '-3px' }}>
                 Indian Health Index
