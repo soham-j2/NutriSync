@@ -1,48 +1,57 @@
 import React from 'react';
-import { Sparkles } from 'lucide-react';
 
 export const NutriAiFab = ({ onClick, healthScore = 75 }) => {
   return (
     <button
       onClick={onClick}
+      id="nutri-ai-fab-btn"
+      aria-label="Open NutriAI Health Assistant"
       style={{
         position: 'fixed',
         bottom: '24px',
-        right: '24px',
+        right: '20px',
         zIndex: 150,
         display: 'flex',
         alignItems: 'center',
         gap: '8px',
-        padding: '10px 18px 10px 14px',
+        padding: '10px 18px 10px 10px',
         borderRadius: '30px',
         background: 'linear-gradient(135deg, #9333ea 0%, #7e22ce 50%, #4c1d95 100%)',
         color: '#ffffff',
-        border: '1px solid rgba(255, 255, 255, 0.3)',
-        boxShadow: '0 8px 24px rgba(147, 51, 234, 0.45)',
+        border: '1px solid rgba(255,255,255,0.25)',
+        boxShadow: '0 8px 24px rgba(147,51,234,0.45)',
         cursor: 'pointer',
-        transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)'
+        transition: 'all 0.25s cubic-bezier(0.4,0,0.2,1)'
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.transform = 'translateY(-3px) scale(1.03)';
-        e.currentTarget.style.boxShadow = '0 12px 32px rgba(147, 51, 234, 0.6)';
+        e.currentTarget.style.transform = 'translateY(-3px) scale(1.04)';
+        e.currentTarget.style.boxShadow = '0 14px 36px rgba(147,51,234,0.6)';
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.transform = 'none';
-        e.currentTarget.style.boxShadow = '0 8px 24px rgba(147, 51, 234, 0.45)';
+        e.currentTarget.style.boxShadow = '0 8px 24px rgba(147,51,234,0.45)';
       }}
     >
+      {/* AI Logo instead of Sparkles */}
       <div style={{
-        width: '26px',
-        height: '26px',
+        width: '30px',
+        height: '30px',
         borderRadius: '50%',
-        background: 'rgba(255, 255, 255, 0.2)',
+        overflow: 'hidden',
+        background: 'rgba(255,255,255,0.15)',
+        flexShrink: 0,
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center',
-        animation: 'pulse 2s infinite'
+        justifyContent: 'center'
       }}>
-        <Sparkles size={15} color="#ffffff" />
+        <img
+          src="/ai-logo.png"
+          alt="NutriAI"
+          style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
+          onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.parentElement.innerHTML = '🧠'; }}
+        />
       </div>
+
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
         <span style={{ fontSize: '13px', fontWeight: '800', letterSpacing: '-0.02em', lineHeight: '1.2' }}>
           Ask NutriAI

@@ -1,42 +1,34 @@
 // Real Live Google Gemini AI & Health Intelligence Engine for NutriVista
-
-export const GEMINI_API_KEY = 
-  import.meta.env.VITE_GEMINI_API_KEY || 
-  'AIzaSyCtTp4j4hvXulxYgIKzkC22Ne3eXu9VAjM';
+// API key is loaded exclusively from .env (VITE_GEMINI_API_KEY) — never hardcoded here.
 
 export const QUICK_PROMPTS = [
-  { id: 'analyze', icon: 'Sparkles', text: 'Analyze My Real Logged Data' },
-  { id: 'dinner', icon: 'Utensils', text: 'Suggest Personalized Meal' },
-  { id: 'macros', icon: 'PieChart', text: 'Critique My Macro Balance' },
-  { id: 'workout', icon: 'Activity', text: 'Analyze Workout Progress' },
-  { id: 'hydration', icon: 'Droplets', text: 'Hydration & Water Goal' }
+  { id: 'analyze', text: 'Analyze My Real Logged Data' },
+  { id: 'dinner', text: 'Suggest Personalized Meal' },
+  { id: 'macros', text: 'Critique My Macro Balance' },
+  { id: 'workout', text: 'Analyze Workout Progress' },
+  { id: 'hydration', text: 'Hydration & Water Goal' }
 ];
 
-const GEMINI_MODELS = [
-  'gemini-2.5-flash',
-  'gemini-1.5-flash',
-  'gemini-1.5-flash-latest'
-];
+const GEMINI_MODEL = 'gemini-2.5-flash';
+const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
 /**
  * Calls Real Live Google Gemini API with user context payload.
  */
 export async function callGeminiApi(userQuery, healthAnalysis, loggedMeals = [], loggedActivities = [], userProfile = {}) {
-  const apiKey = import.meta.env.VITE_GEMINI_API_KEY || GEMINI_API_KEY;
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 
   if (!apiKey) {
-    console.warn('[NutriAI] No Gemini API key found, using local fallback engine.');
+    console.warn('[NutriAI] No Gemini API key found in .env. Using local fallback engine.');
     return generateFallbackAiResponse(userQuery, healthAnalysis, loggedMeals, loggedActivities, userProfile);
   }
 
   const score = healthAnalysis?.finalScore ?? healthAnalysis?.healthIndexScore ?? 50;
-
   const totals = healthAnalysis?.totals || { calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0, burnedCalories: 0, exerciseMinutes: 0, junkItemCount: 0 };
   const targets = healthAnalysis?.targets || { targetCalories: 2000, targetProtein: 120, targetCarbs: 250, targetFat: 60, targetFiber: 28, targetWaterGlasses: 8 };
-  // waterGlasses is now available at top-level AND inside totals
   const waterGlasses = healthAnalysis?.waterGlasses ?? healthAnalysis?.totals?.waterGlasses ?? 0;
 
-  const mealsText = loggedMeals.length > 0 
+  const mealsText = loggedMeals.length > 0
     ? loggedMeals.map(m => `- ${m.name}: ${m.calories} kcal, ${m.protein}g protein, ${m.carbs}g carbs, ${m.fat}g fat, ${m.fiber || 0}g fiber`).join('\n')
     : 'No meals logged yet today.';
 
@@ -73,55 +65,47 @@ USER QUESTION: "${userQuery}"
 Provide an intelligent, personalized, and actionable response based directly on the above real user data. Always reference actual logged meals by name. When suggesting foods, name specific Indian dishes. Be concise, practical, and highly motivating!
 `;
 
-  // Try each supported model until one succeeds
-  for (const model of GEMINI_MODELS) {
-    try {
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+  try {
+    const res = await fetch(`${GEMINI_ENDPOINT}?key=${apiKey}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: promptText }] }]
+      })
+    });
 
-      const res = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: promptText }] }]
-        })
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (reply && reply.trim()) {
-          return reply;
-        }
-      } else {
-        console.warn(`[NutriAI Gemini Model ${model} returned ${res.status}]`);
-      }
-    } catch (e) {
-      console.warn(`[NutriAI Gemini Model ${model} failed]`, e);
+    if (res.ok) {
+      const data = await res.json();
+      const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (reply && reply.trim()) return reply;
     }
+
+    console.warn(`[NutriAI] Gemini API returned status ${res.status}. Using fallback.`);
+  } catch (e) {
+    console.warn('[NutriAI] Gemini API call failed:', e);
   }
 
-  // Local fallback if all model calls fail
+  // Offline / error fallback
   return generateFallbackAiResponse(userQuery, healthAnalysis, loggedMeals, loggedActivities, userProfile);
 }
 
 /**
- * Mathematical Fallback Engine if network is offline.
+ * Mathematical Fallback Engine if network is offline or API key missing.
  */
 export function generateFallbackAiResponse(userQuery, healthAnalysis, loggedMeals = [], loggedActivities = [], userProfile = {}) {
   const score = healthAnalysis?.finalScore ?? healthAnalysis?.healthIndexScore ?? 50;
-
   const totals = healthAnalysis?.totals || { calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0, burnedCalories: 0, exerciseMinutes: 0 };
-  const targets = healthAnalysis?.targets || { targetCalories: 2000, targetProtein: 120, targetWaterGlasses: 10 };
-  const waterGlasses = healthAnalysis?.waterGlasses || 0;
+  const targets = healthAnalysis?.targets || { targetCalories: 2000, targetProtein: 120, targetWaterGlasses: 8 };
+  const waterGlasses = healthAnalysis?.waterGlasses ?? healthAnalysis?.totals?.waterGlasses ?? 0;
   const remainingCalories = targets.targetCalories - (totals.calories - totals.burnedCalories);
   const remainingProtein = Math.max(0, targets.targetProtein - totals.protein);
 
   return `### 📊 Real Data Analysis (Health Index: ${score}/100)
 
-- **Calorie Intake**: **${totals.calories}** / **${targets.targetCalories} kcal** (${remainingCalories >= 0 ? `${remainingCalories} kcal remaining` : `${Math.abs(remainingCalories)} kcal over target`})
-- **Protein Intake**: **${totals.protein}g** / **${targets.targetProtein}g** (${remainingProtein > 0 ? `Need ${remainingProtein}g more` : 'Target Achieved!'})
-- **Workouts**: **${loggedActivities.length} items** (${totals.burnedCalories} kcal burned)
-- **Water**: **${waterGlasses}** / **${targets.targetWaterGlasses} glasses**
+• **Calorie Intake**: **${totals.calories}** / **${targets.targetCalories} kcal** (${remainingCalories >= 0 ? `${remainingCalories} kcal remaining` : `${Math.abs(remainingCalories)} kcal over target`})
+• **Protein Intake**: **${totals.protein}g** / **${targets.targetProtein}g** (${remainingProtein > 0 ? `Need ${remainingProtein}g more` : 'Target Achieved! ✅'})
+• **Workouts**: **${loggedActivities.length} items** (${totals.burnedCalories} kcal burned)
+• **Water**: **${waterGlasses}** / **${targets.targetWaterGlasses} glasses**
 
 Ask me anything specific about your daily diet or workout progress!`;
 }
