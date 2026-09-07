@@ -111,7 +111,7 @@ export const WebAppLayout = ({
               onClick={() => setActiveTab('summary')}
             >
               <FileText size={15} />
-              <span>Daily Summary</span>
+              <span>Summary</span>
             </button>
 
             <button 

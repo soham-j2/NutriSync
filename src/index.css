@@ -111,7 +111,7 @@ h1, h2, h3, h4, h5, h6 {
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border-subtle);
-  padding: 10px 12px;
+  padding: 8px 12px;
   margin-bottom: 16px;
   box-shadow: 0 4px 20px rgba(147, 51, 234, 0.05);
 }
@@ -128,7 +128,7 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 @media (min-width: 768px) {
@@ -156,27 +156,27 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Nav Tab Pills */
 .web-nav-tabs {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 2px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
   background: rgba(147, 51, 234, 0.06);
-  padding: 3px;
+  padding: 4px;
   border-radius: var(--radius-full);
   width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
-@media (min-width: 768px) {
-  .web-nav-tabs {
-    display: flex;
-    gap: 4px;
-    padding: 4px;
-    width: auto;
-    justify-content: flex-start;
-  }
+.web-nav-tabs::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 .web-tab-btn {
-  padding: 7px 4px;
+  padding: 7px 10px;
   border-radius: var(--radius-full);
   border: none;
   background: transparent;
@@ -187,18 +187,31 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 5px;
   white-space: nowrap;
   transition: all 0.2s ease;
-  width: 100%;
+  flex: 1 0 auto;
+}
+
+@media (min-width: 640px) {
+  .web-tab-btn {
+    padding: 8px 14px;
+    font-size: 12px;
+    gap: 6px;
+  }
 }
 
 @media (min-width: 768px) {
+  .web-nav-tabs {
+    width: auto;
+    justify-content: flex-start;
+  }
+
   .web-tab-btn {
     padding: 8px 18px;
     font-size: 13px;
     gap: 8px;
-    width: auto;
+    flex: initial;
   }
 }
 
