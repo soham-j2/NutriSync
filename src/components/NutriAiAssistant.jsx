@@ -121,6 +121,32 @@ Ask me anything about your real meals, macros, or a personalised diet plan!`;
     }
   }, [messages, isOpen, isThinking]);
 
+  // Intercept browser / mobile hardware Back button when modal is open
+  useEffect(() => {
+    if (!isOpen) return;
+
+    // Push a history entry so mobile/browser back button closes modal instead of exiting page
+    window.history.pushState({ nutriAiOpen: true }, '');
+
+    const handlePopState = () => {
+      onClose();
+    };
+
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [isOpen, onClose]);
+
+  const handleModalClose = () => {
+    if (window.history.state?.nutriAiOpen) {
+      window.history.back();
+    } else {
+      onClose();
+    }
+  };
+
   // Focus input when opening on desktop
   useEffect(() => {
     if (isOpen) {
@@ -184,7 +210,7 @@ Ask me anything about your real meals, macros, or a personalised diet plan!`;
         padding: 0,
         animation: 'fadeIn 0.2s ease-out'
       }}
-      onClick={onClose}
+      onClick={handleModalClose}
     >
       <div
         onClick={(e) => e.stopPropagation()}
@@ -263,7 +289,7 @@ Ask me anything about your real meals, macros, or a personalised diet plan!`;
             </button>
             {/* Close */}
             <button
-              onClick={onClose}
+              onClick={handleModalClose}
               style={{
                 background: 'var(--bg-card-subtle)', border: '1px solid var(--border-subtle)', color: 'var(--text-main)',
                 borderRadius: '50%', width: '32px', height: '32px', display: 'flex',

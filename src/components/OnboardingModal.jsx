@@ -1,9 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { User, X } from 'lucide-react';
 import { calculateNutritionalTargets } from '../utils/healthCalculators';
 
 export const OnboardingModal = ({ isOpen, onClose, userProfile, onSaveProfile }) => {
   const [formData, setFormData] = useState(userProfile);
+
+  // Intercept mobile/browser hardware back button when modal is open
+  useEffect(() => {
+    if (!isOpen) return;
+
+    window.history.pushState({ profileModalOpen: true }, '');
+
+    const handlePopState = () => {
+      onClose();
+    };
+
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [isOpen, onClose]);
+
+  const handleModalClose = () => {
+    if (window.history.state?.profileModalOpen) {
+      window.history.back();
+    } else {
+      onClose();
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -16,11 +41,11 @@ export const OnboardingModal = ({ isOpen, onClose, userProfile, onSaveProfile })
   const handleSubmit = (e) => {
     e.preventDefault();
     onSaveProfile(formData);
-    onClose();
+    handleModalClose();
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-overlay" onClick={handleModalClose}>
       <div className="modal-content-card" onClick={(e) => e.stopPropagation()}>
         
         {/* Header */}
@@ -34,7 +59,7 @@ export const OnboardingModal = ({ isOpen, onClose, userProfile, onSaveProfile })
               <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Calculates BMR & TDEE Health Baseline</span>
             </div>
           </div>
-          <button onClick={onClose} style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>
+          <button onClick={handleModalClose} style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>
             <X size={22} />
           </button>
         </div>
