@@ -238,17 +238,9 @@ Ask me anything about your real meals, macros, or a personalised diet plan!`;
             </div>
 
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <h3 style={{ fontSize: '16px', fontWeight: '800', margin: 0, color: 'var(--text-main)', letterSpacing: '-0.02em' }}>
-                  NutriAI Health Assistant
-                </h3>
-                <span style={{
-                  fontSize: '10px', fontWeight: '800', padding: '2px 7px', borderRadius: '10px',
-                  background: 'var(--accent-emerald-bg)', color: 'var(--accent-emerald)', border: '1px solid rgba(16,185,129,0.3)'
-                }}>
-                  LIVE AI
-                </span>
-              </div>
+              <h3 style={{ fontSize: '16px', fontWeight: '800', margin: 0, color: 'var(--text-main)', letterSpacing: '-0.02em' }}>
+                NutriAI Health Assistant
+              </h3>
               <span style={{ fontSize: '11px', color: 'var(--text-muted)', display: 'block', marginTop: '1px' }}>
                 {loggedMeals.length} meals logged · Score: <strong style={{ color: 'var(--primary-purple)' }}>{healthAnalysis?.finalScore ?? 50}/100</strong>
               </span>

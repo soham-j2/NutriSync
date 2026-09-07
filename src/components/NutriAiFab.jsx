@@ -35,7 +35,7 @@ export const NutriAiFab = ({ onClick, healthScore = 75 }) => {
         e.currentTarget.style.boxShadow = '0 8px 24px rgba(124, 92, 191, 0.35), 0 2px 8px rgba(0, 0, 0, 0.04)';
       }}
     >
-      {/* Animated AI Icon Container */}
+      {/* AI Icon Container */}
       <div style={{
         width: '32px',
         height: '32px',
@@ -45,20 +45,9 @@ export const NutriAiFab = ({ onClick, healthScore = 75 }) => {
         alignItems: 'center',
         justifyContent: 'center',
         flexShrink: 0,
-        position: 'relative',
         boxShadow: 'inset 0 1px 1px rgba(255,255,255,0.4)'
       }}>
         <Sparkles size={16} color="#ffffff" />
-        <span style={{
-          position: 'absolute',
-          top: '-1px',
-          right: '-1px',
-          width: '8px',
-          height: '8px',
-          borderRadius: '50%',
-          background: '#10b981',
-          border: '1.5px solid #7C5CBF'
-        }} />
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textOverflow: 'ellipsis' }}>
