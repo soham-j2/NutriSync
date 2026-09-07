@@ -12,30 +12,37 @@ export const QUICK_PROMPTS = [
   { id: 'hydration', icon: 'Droplets', text: 'Hydration & Water Goal' }
 ];
 
+const GEMINI_MODELS = [
+  'gemini-2.5-flash',
+  'gemini-3.6-flash',
+  'gemini-flash-latest'
+];
+
 /**
- * Calls Real Live Google Gemini 1.5 Flash API with user context payload.
+ * Calls Real Live Google Gemini API with user context payload.
  */
 export async function callGeminiApi(userQuery, healthAnalysis, loggedMeals = [], loggedActivities = [], userProfile = {}) {
-  if (!GEMINI_API_KEY) {
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY || GEMINI_API_KEY;
+
+  if (!apiKey) {
     console.warn('[NutriAI] No Gemini API key found, using local fallback engine.');
     return generateFallbackAiResponse(userQuery, healthAnalysis, loggedMeals, loggedActivities, userProfile);
   }
 
-  try {
-    const score = healthAnalysis?.healthIndexScore || 75;
-    const totals = healthAnalysis?.totals || { calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0, burnedCalories: 0, exerciseMinutes: 0, junkItemCount: 0 };
-    const targets = healthAnalysis?.targets || { targetCalories: 2000, targetProtein: 120, targetCarbs: 250, targetFat: 60, targetFiber: 28, targetWaterGlasses: 10 };
-    const waterGlasses = healthAnalysis?.waterGlasses || 0;
+  const score = healthAnalysis?.healthIndexScore || 75;
+  const totals = healthAnalysis?.totals || { calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0, burnedCalories: 0, exerciseMinutes: 0, junkItemCount: 0 };
+  const targets = healthAnalysis?.targets || { targetCalories: 2000, targetProtein: 120, targetCarbs: 250, targetFat: 60, targetFiber: 28, targetWaterGlasses: 10 };
+  const waterGlasses = healthAnalysis?.waterGlasses || 0;
 
-    const mealsText = loggedMeals.length > 0 
-      ? loggedMeals.map(m => `- ${m.name}: ${m.calories} kcal, ${m.protein}g protein, ${m.carbs}g carbs, ${m.fat}g fat, ${m.fiber || 0}g fiber`).join('\n')
-      : 'No meals logged yet today.';
+  const mealsText = loggedMeals.length > 0 
+    ? loggedMeals.map(m => `- ${m.name}: ${m.calories} kcal, ${m.protein}g protein, ${m.carbs}g carbs, ${m.fat}g fat, ${m.fiber || 0}g fiber`).join('\n')
+    : 'No meals logged yet today.';
 
-    const workoutsText = loggedActivities.length > 0
-      ? loggedActivities.map(a => `- ${a.name}: ${a.durationMins || a.duration || 0} mins, ${a.caloriesBurned || a.calories || 0} kcal burned`).join('\n')
-      : 'No workouts logged yet today.';
+  const workoutsText = loggedActivities.length > 0
+    ? loggedActivities.map(a => `- ${a.name}: ${a.durationMins || a.duration || 0} mins, ${a.caloriesBurned || a.calories || 0} kcal burned`).join('\n')
+    : 'No workouts logged yet today.';
 
-    const promptText = `
+  const promptText = `
 You are NutriAI, an elite, highly encouraging, and scientific nutrition & health coach built inside the NutriVista health tracking app.
 Respond concisely using rich Markdown (headers with ###, bullet points with •, bold text **text**).
 
@@ -63,41 +70,41 @@ USER QUESTION: "${userQuery}"
 Provide an intelligent, personalized, and actionable response based directly on the above real user data. Be concise, practical, and highly motivating!
 `;
 
-    // Try Gemini 1.5 Flash endpoint
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+  // Try each supported model until one succeeds
+  for (const model of GEMINI_MODELS) {
+    try {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: promptText }] }]
-      })
-    });
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: promptText }] }]
+        })
+      });
 
-    if (!res.ok) {
-      console.error('[NutriAI Gemini Error]', res.status, res.statusText);
-      return generateFallbackAiResponse(userQuery, healthAnalysis, loggedMeals, loggedActivities, userProfile);
+      if (res.ok) {
+        const data = await res.json();
+        const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (reply && reply.trim()) {
+          return reply;
+        }
+      } else {
+        console.warn(`[NutriAI Gemini Model ${model} returned ${res.status}]`);
+      }
+    } catch (e) {
+      console.warn(`[NutriAI Gemini Model ${model} failed]`, e);
     }
-
-    const data = await res.json();
-    const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-
-    if (reply && reply.trim()) {
-      return reply;
-    }
-
-    return generateFallbackAiResponse(userQuery, healthAnalysis, loggedMeals, loggedActivities, userProfile);
-  } catch (err) {
-    console.error('[NutriAI Gemini Exception]', err);
-    return generateFallbackAiResponse(userQuery, healthAnalysis, loggedMeals, loggedActivities, userProfile);
   }
+
+  // Local fallback if all model calls fail
+  return generateFallbackAiResponse(userQuery, healthAnalysis, loggedMeals, loggedActivities, userProfile);
 }
 
 /**
- * Mathematical Fallback Engine if network is offline or API fails.
+ * Mathematical Fallback Engine if network is offline.
  */
 export function generateFallbackAiResponse(userQuery, healthAnalysis, loggedMeals = [], loggedActivities = [], userProfile = {}) {
-  const queryLower = userQuery.toLowerCase().trim();
   const score = healthAnalysis?.healthIndexScore || 75;
   const totals = healthAnalysis?.totals || { calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0, burnedCalories: 0, exerciseMinutes: 0 };
   const targets = healthAnalysis?.targets || { targetCalories: 2000, targetProtein: 120, targetWaterGlasses: 10 };
