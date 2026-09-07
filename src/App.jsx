@@ -125,7 +125,6 @@ export function App() {
     <WebAppLayout
       activeTab={activeTab}
       setActiveTab={setActiveTab}
-      onLoadPreset={handleLoadPreset}
       userProfile={userProfile}
       onOpenProfileModal={() => setShowProfileModal(true)}
     >

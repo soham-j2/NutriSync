@@ -110,7 +110,7 @@ export const ActivityLogger = ({ loggedActivities, onAddActivity, onDeleteActivi
                   key={idx}
                   style={{
                     display: 'flex',
-                    justify: 'space-between',
+                    justifyContent: 'space-between',
                     alignItems: 'center',
                     background: 'var(--bg-card-subtle)',
                     borderRadius: '14px',

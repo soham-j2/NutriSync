@@ -156,40 +156,41 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Nav Tab Pills */
 .web-nav-tabs {
-  display: flex;
-  gap: 4px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 3px;
   background: rgba(147, 51, 234, 0.06);
-  padding: 4px;
+  padding: 3px;
   border-radius: var(--radius-full);
-  overflow-x: auto;
   width: 100%;
-  -webkit-overflow-scrolling: touch;
-  justify-content: space-between;
 }
 
 @media (min-width: 768px) {
   .web-nav-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 4px;
     width: auto;
     justify-content: flex-start;
   }
 }
 
 .web-tab-btn {
-  padding: 8px 10px;
+  padding: 7px 4px;
   border-radius: var(--radius-full);
   border: none;
   background: transparent;
   color: var(--text-muted);
   font-weight: 700;
-  font-size: 12px;
+  font-size: 11px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
+  gap: 4px;
   white-space: nowrap;
   transition: all 0.2s ease;
-  flex: 1;
+  width: 100%;
 }
 
 @media (min-width: 768px) {
@@ -197,7 +198,7 @@ h1, h2, h3, h4, h5, h6 {
     padding: 8px 18px;
     font-size: 13px;
     gap: 8px;
-    flex: initial;
+    width: auto;
   }
 }
 

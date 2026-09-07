@@ -112,7 +112,7 @@ export const MealLogger = ({ loggedMeals, onAddMeal, onDeleteMeal }) => {
                         key={idx}
                         style={{
                           display: 'flex',
-                          justify: 'space-between',
+                          justifyContent: 'space-between',
                           alignItems: 'center',
                           background: 'var(--bg-card-subtle)',
                           borderRadius: '12px',
@@ -262,7 +262,7 @@ export const MealLogger = ({ loggedMeals, onAddMeal, onDeleteMeal }) => {
                       background: '#ffffff',
                       borderRadius: '14px',
                       display: 'flex',
-                      justify: 'space-between',
+                      justifyContent: 'space-between',
                       alignItems: 'center',
                       border: '1px solid var(--border-subtle)',
                       boxShadow: '0 2px 8px rgba(147, 51, 234, 0.04)',

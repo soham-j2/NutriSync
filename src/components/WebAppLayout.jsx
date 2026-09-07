@@ -1,17 +1,13 @@
-import React, { useState } from 'react';
-import { LayoutDashboard, UtensilsCrossed, Activity, TrendingUp, User, Sparkles, ChevronDown } from 'lucide-react';
-import { DEMO_PRESETS } from '../data/ifctFoodDatabase';
+import React from 'react';
+import { LayoutDashboard, UtensilsCrossed, Activity, TrendingUp, User } from 'lucide-react';
 
 export const WebAppLayout = ({ 
   activeTab, 
   setActiveTab, 
   children, 
-  onLoadPreset,
   userProfile,
   onOpenProfileModal
 }) => {
-  const [showPresetDropdown, setShowPresetDropdown] = useState(false);
-
   return (
     <div style={{ minHeight: '100vh' }}>
       
@@ -58,67 +54,6 @@ export const WebAppLayout = ({
             {/* Right Action Controls */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               
-              {/* Demo Preset Dropdown */}
-              <div style={{ position: 'relative' }}>
-                <button 
-                  className="btn-subtle"
-                  style={{ padding: '6px 12px', fontSize: '11px' }}
-                  onClick={() => setShowPresetDropdown(!showPresetDropdown)}
-                >
-                  <Sparkles size={13} color="var(--primary-purple)" />
-                  <span>Demo Presets</span>
-                  <ChevronDown size={13} />
-                </button>
-
-                {showPresetDropdown && (
-                  <div style={{
-                    position: 'absolute',
-                    top: '115%',
-                    right: 0,
-                    width: '250px',
-                    background: '#ffffff',
-                    border: '1px solid var(--border-subtle)',
-                    borderRadius: '18px',
-                    padding: '10px',
-                    boxShadow: '0 20px 40px -5px rgba(147, 51, 234, 0.25)',
-                    zIndex: 100
-                  }}>
-                    <div style={{ fontSize: '10px', fontWeight: '800', color: 'var(--text-purple-muted)', padding: '4px 8px', letterSpacing: '0.04em' }}>
-                      TEST DAY SCENARIOS
-                    </div>
-                    {Object.entries(DEMO_PRESETS).map(([key, preset]) => (
-                      <button
-                        key={key}
-                        style={{
-                          width: '100%',
-                          textAlign: 'left',
-                          padding: '8px',
-                          background: 'transparent',
-                          border: 'none',
-                          color: 'var(--text-main)',
-                          fontSize: '12px',
-                          borderRadius: '10px',
-                          cursor: 'pointer',
-                          display: 'flex',
-                          flexDirection: 'column',
-                          gap: '2px',
-                          transition: 'background 0.2s'
-                        }}
-                        onMouseOver={(e) => e.currentTarget.style.background = 'var(--bg-card-subtle)'}
-                        onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
-                        onClick={() => {
-                          onLoadPreset(preset);
-                          setShowPresetDropdown(false);
-                        }}
-                      >
-                        <span style={{ fontWeight: '700', color: 'var(--primary-purple)' }}>{preset.label}</span>
-                        <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{preset.description}</span>
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-
               {/* Profile Biometrics Button */}
               <button 
                 onClick={onOpenProfileModal}
