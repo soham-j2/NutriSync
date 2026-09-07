@@ -269,8 +269,9 @@ export function App() {
       {/* NutriAI Floating Action Button */}
       <NutriAiFab 
         onClick={() => setShowAiAssistant(true)} 
-        healthScore={currentAnalysis.healthIndexScore} 
+        healthScore={currentAnalysis.finalScore ?? currentAnalysis.healthIndexScore ?? 50} 
       />
+
 
       {/* NutriAI Interactive Assistant Chat Modal */}
       <NutriAiAssistant

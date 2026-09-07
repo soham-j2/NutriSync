@@ -87,12 +87,13 @@ export const NutriAiAssistant = ({
       const cals = healthAnalysis?.totals?.calories || 0;
       const protein = healthAnalysis?.totals?.protein || 0;
       const targetP = healthAnalysis?.targets?.targetProtein || 120;
-      const score = healthAnalysis?.healthIndexScore || 75;
+      const score = healthAnalysis?.finalScore ?? healthAnalysis?.healthIndexScore ?? 50;
 
       const welcomeText = `### 👋 Hello! I'm NutriAI powered by Google Gemini.
 
 I've loaded your live health metrics for today:
 • **Health Index Score**: **${score}/100**
+
 • **Logged Meals**: **${mealsCount} items** (${cals} kcal consumed)
 • **Logged Workouts**: **${actCount} items** (${healthAnalysis?.totals?.burnedCalories || 0} kcal burned)
 • **Protein Progress**: **${protein}g** / ${targetP}g Target
@@ -214,8 +215,9 @@ Ask me any question about your real meals, macros, or customized diet plans!`;
 
               </div>
               <span style={{ fontSize: '11px', color: '#c7d2fe', display: 'block', marginTop: '1px' }}>
-                Evaluating {loggedMeals.length} meals | Health Index: <strong>{healthAnalysis?.healthIndexScore || 75}/100</strong>
+                Evaluating {loggedMeals.length} meals | Health Index: <strong>{healthAnalysis?.finalScore ?? healthAnalysis?.healthIndexScore ?? 50}/100</strong>
               </span>
+
             </div>
           </div>
 

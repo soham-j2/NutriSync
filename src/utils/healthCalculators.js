@@ -23,7 +23,7 @@ export const calculateTDEE = (bmr, activityLevel = 'moderate') => {
   return Math.round(bmr * mult);
 };
 
-export const calculateNutritionalTargets = (profile) => {
+export const calculateNutritionalTargets = (profile = {}) => {
   const bmr = calculateBMR(profile);
   const tdee = calculateTDEE(bmr, profile.activityLevel);
 
@@ -32,26 +32,29 @@ export const calculateNutritionalTargets = (profile) => {
   if (profile.goal === 'gain') targetCalories += 350;
 
   // Target Macros
-  const targetProteinGrams = Math.round((targetCalories * 0.25) / 4); // 25% protein
-  const targetCarbsGrams = Math.round((targetCalories * 0.50) / 4);   // 50% carbs
-  const targetFatGrams = Math.round((targetCalories * 0.25) / 9);     // 25% fat
-  const targetFiberGrams = 30; // IFCT recommended fiber target
+  const targetProtein = Math.round((targetCalories * 0.25) / 4); // 25% protein
+  const targetCarbs = Math.round((targetCalories * 0.50) / 4);   // 50% carbs
+  const targetFat = Math.round((targetCalories * 0.25) / 9);     // 25% fat
+  const targetFiber = 30; // IFCT recommended fiber target
   const targetWaterGlasses = 8;
 
   return {
     bmr,
     tdee,
     targetCalories,
-    targetProteinGrams,
-    targetCarbsGrams,
-    targetFatGrams,
-    targetFiberGrams,
+    targetProtein,
+    targetProteinGrams: targetProtein,
+    targetCarbs,
+    targetCarbsGrams: targetCarbs,
+    targetFat,
+    targetFatGrams: targetFat,
+    targetFiber,
+    targetFiberGrams: targetFiber,
     targetWaterGlasses
   };
 };
 
 export const calculateActivityBurn = (met, durationMinutes, weightKg = 68) => {
-  // Calories Burned = (MET * 3.5 * weightInKg / 200) * durationInMinutes
   const metVal = Number(met);
   const dur = Number(durationMinutes);
   const w = Number(weightKg);

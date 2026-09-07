@@ -29,7 +29,8 @@ export async function callGeminiApi(userQuery, healthAnalysis, loggedMeals = [],
     return generateFallbackAiResponse(userQuery, healthAnalysis, loggedMeals, loggedActivities, userProfile);
   }
 
-  const score = healthAnalysis?.healthIndexScore || 75;
+  const score = healthAnalysis?.finalScore ?? healthAnalysis?.healthIndexScore ?? 50;
+
   const totals = healthAnalysis?.totals || { calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0, burnedCalories: 0, exerciseMinutes: 0, junkItemCount: 0 };
   const targets = healthAnalysis?.targets || { targetCalories: 2000, targetProtein: 120, targetCarbs: 250, targetFat: 60, targetFiber: 28, targetWaterGlasses: 10 };
   const waterGlasses = healthAnalysis?.waterGlasses || 0;
@@ -105,7 +106,8 @@ Provide an intelligent, personalized, and actionable response based directly on 
  * Mathematical Fallback Engine if network is offline.
  */
 export function generateFallbackAiResponse(userQuery, healthAnalysis, loggedMeals = [], loggedActivities = [], userProfile = {}) {
-  const score = healthAnalysis?.healthIndexScore || 75;
+  const score = healthAnalysis?.finalScore ?? healthAnalysis?.healthIndexScore ?? 50;
+
   const totals = healthAnalysis?.totals || { calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0, burnedCalories: 0, exerciseMinutes: 0 };
   const targets = healthAnalysis?.targets || { targetCalories: 2000, targetProtein: 120, targetWaterGlasses: 10 };
   const waterGlasses = healthAnalysis?.waterGlasses || 0;

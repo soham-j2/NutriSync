@@ -47,7 +47,9 @@ export const computeDailyHealthIndex = (loggedMeals = [], loggedActivities = [],
   if (loggedMeals.length === 0 && loggedActivities.length === 0 && waterGlasses === 0) {
     return {
       finalScore: 50,
+      healthIndexScore: 50,
       grade: { label: 'Moderate', color: 'amber', badge: 'Log Started' },
+
       totals: {
         calories: 0,
         protein: 0,
@@ -186,7 +188,9 @@ export const computeDailyHealthIndex = (loggedMeals = [], loggedActivities = [],
 
   return {
     finalScore,
+    healthIndexScore: finalScore,
     grade,
+
     totals: {
       calories: Math.round(totalCalories),
       protein: Math.round(totalProtein),
