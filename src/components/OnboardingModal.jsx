@@ -43,6 +43,30 @@ export const OnboardingModal = ({ isOpen, onClose, userProfile, onSaveProfile })
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           
+          {/* Full Name */}
+          <div>
+            <label style={{ fontSize: '12px', fontWeight: '700', color: 'var(--text-main)', display: 'block', marginBottom: '4px' }}>
+              Full Name
+            </label>
+            <input
+              type="text"
+              placeholder="e.g. Sazidur Rahman"
+              value={formData.name || ''}
+              onChange={(e) => handleChange('name', e.target.value)}
+              style={{
+                width: '100%',
+                padding: '10px 12px',
+                background: 'var(--bg-card-subtle)',
+                border: '1px solid var(--border-subtle)',
+                borderRadius: '10px',
+                color: 'var(--text-main)',
+                fontSize: '13px',
+                fontWeight: '600',
+                outline: 'none'
+              }}
+            />
+          </div>
+
           {/* Gender Selector */}
           <div>
             <label style={{ fontSize: '12px', fontWeight: '700', color: 'var(--text-main)', display: 'block', marginBottom: '6px' }}>

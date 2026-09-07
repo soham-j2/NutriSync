@@ -78,7 +78,7 @@ export const WebAppLayout = ({
                 <div style={{ width: '26px', height: '26px', borderRadius: '50%', background: 'var(--primary-purple)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>
                   <User size={14} />
                 </div>
-                <span>Profile</span>
+                <span>{userProfile?.name ? userProfile.name.split(' ')[0] : 'Profile'}</span>
               </button>
 
             </div>

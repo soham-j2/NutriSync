@@ -36,12 +36,16 @@ export async function callGeminiApi(userQuery, healthAnalysis, loggedMeals = [],
     ? loggedActivities.map(a => `- ${a.name}: ${a.durationMins || a.duration || 0} mins, ${a.caloriesBurned || a.calories || 0} kcal burned`).join('\n')
     : 'No workouts logged yet today.';
 
+  const userName = userProfile?.name?.trim() ? userProfile.name : 'User';
+  const firstName = userName.split(' ')[0];
+
   const promptText = `You are NutriAI, an elite encouraging scientific nutrition & health coach inside the NutriVista app.
 Respond concisely with rich Markdown (### headers, • bullets, **bold**).
+IMPORTANT: Address the user by their name "${firstName}" when appropriate.
 IMPORTANT: When recommending foods, ALWAYS name specific Indian dishes (e.g. "Paneer Tikka", "Moong Dal Chilla", "Rajma Chawal"). Never say "high-protein meal" without naming the dish.
 
 LIVE USER DATA:
-- Profile: ${userProfile.gender || 'male'}, ${userProfile.age || 21} yrs, ${userProfile.weight || 68}kg, ${userProfile.height || 175}cm. Goal: ${userProfile.goal || 'maintain'}.
+- Profile: Name: ${userName}, ${userProfile.gender || 'male'}, ${userProfile.age || 21} yrs, ${userProfile.weight || 68}kg, ${userProfile.height || 175}cm. Goal: ${userProfile.goal || 'maintain'}.
 - Health Index Score: ${score}/100.
 - Calories today: ${totals.calories} kcal eaten / ${targets.targetCalories} kcal target (${targets.targetCalories - totals.calories} kcal left).
 - Exercise: ${totals.burnedCalories} kcal burned (${totals.exerciseMinutes} mins active).
@@ -58,7 +62,7 @@ ${workoutsText}
 
 USER QUESTION: "${userQuery}"
 
-Give an intelligent, personalized, actionable answer using the real data above. Reference logged meals by name. Suggest specific Indian dish names. Be concise and motivating.`;
+Give an intelligent, personalized, actionable answer using the real data above. Address ${firstName} naturally. Reference logged meals by name. Suggest specific Indian dish names. Be concise and motivating.`;
 
   try {
     const res = await fetch(`${GEMINI_ENDPOINT}?key=${encodeURIComponent(apiKey)}`, {
@@ -89,6 +93,7 @@ Give an intelligent, personalized, actionable answer using the real data above. 
  */
 export function generateSmartLocalResponse(userQuery, healthAnalysis, loggedMeals = [], loggedActivities = [], userProfile = {}) {
   const q = (userQuery || '').toLowerCase();
+  const userName = userProfile?.name?.trim() ? userProfile.name.split(' ')[0] : 'there';
   const score = healthAnalysis?.finalScore ?? healthAnalysis?.healthIndexScore ?? 50;
   const totals = healthAnalysis?.totals || { calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0, burnedCalories: 0, exerciseMinutes: 0 };
   const targets = healthAnalysis?.targets || { targetCalories: 2000, targetProtein: 120, targetCarbs: 250, targetFat: 60, targetFiber: 30, targetWaterGlasses: 8 };
@@ -100,7 +105,7 @@ export function generateSmartLocalResponse(userQuery, healthAnalysis, loggedMeal
   // ── Meal / food / dinner suggestion ──
   if (q.match(/meal|food|eat|dinner|lunch|breakfast|snack|suggest|recommend|dish/)) {
     const proteinNeeded = remainingProtein > 0;
-    return `### 🍽️ Personalised Meal Suggestions
+    return `### 🍽️ Personalised Meal Suggestions for ${userName}
 
 **Based on your data**: You've had ${totals.calories} kcal (${mealNames}). You still have **${remainingCal > 0 ? remainingCal : 0} kcal** left for the day.
 
