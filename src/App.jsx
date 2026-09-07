@@ -9,9 +9,11 @@ import { SuggestionsSection } from './components/SuggestionsSection';
 import { TrendsDashboard } from './components/TrendsDashboard';
 import { DailySummary } from './components/DailySummary';
 import { OnboardingModal } from './components/OnboardingModal';
+import { NutriAiAssistant } from './components/NutriAiAssistant';
+import { NutriAiFab } from './components/NutriAiFab';
 import { computeDailyHealthIndex } from './utils/healthIndexEngine';
 import { DEMO_PRESETS } from './data/ifctFoodDatabase';
-import { ShieldCheck, Flame, Utensils, Activity, Sparkles, RefreshCw, ArrowRight } from 'lucide-react';
+import { Utensils, Activity, Sparkles, ArrowRight } from 'lucide-react';
 
 const DEFAULT_PROFILE = {
   age: 21,
@@ -33,11 +35,15 @@ const ensureUniqueIds = (items = []) => {
 export function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [showProfileModal, setShowProfileModal] = useState(false);
+  const [showAiAssistant, setShowAiAssistant] = useState(false);
 
   const [userProfile, setUserProfile] = useState(() => {
     const saved = localStorage.getItem('nutriloop_profile') || localStorage.getItem('nutrisync_profile');
     return saved ? JSON.parse(saved) : DEFAULT_PROFILE;
   });
+
+
+
 
   const [loggedMeals, setLoggedMeals] = useState(() => {
     const saved = localStorage.getItem('nutriloop_meals') || localStorage.getItem('nutrisync_meals');
@@ -116,18 +122,13 @@ export function App() {
     setLoggedActivities(prev => prev.filter(a => (a.id ? a.id !== actToDelete.id : a !== actToDelete)));
   };
 
-  const handleResetDay = () => {
-    setLoggedMeals([]);
-    setLoggedActivities([]);
-    setWaterGlasses(0);
-  };
-
   return (
     <WebAppLayout
       activeTab={activeTab}
       setActiveTab={setActiveTab}
       userProfile={userProfile}
       onOpenProfileModal={() => setShowProfileModal(true)}
+      onOpenAiAssistant={() => setShowAiAssistant(true)}
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
 
@@ -264,8 +265,27 @@ export function App() {
         userProfile={userProfile}
         onSaveProfile={setUserProfile}
       />
+
+      {/* NutriAI Floating Action Button */}
+      <NutriAiFab 
+        onClick={() => setShowAiAssistant(true)} 
+        healthScore={currentAnalysis.healthIndexScore} 
+      />
+
+      {/* NutriAI Interactive Assistant Chat Modal */}
+      <NutriAiAssistant
+        isOpen={showAiAssistant}
+        onClose={() => setShowAiAssistant(false)}
+        healthAnalysis={currentAnalysis}
+        loggedMeals={loggedMeals}
+        loggedActivities={loggedActivities}
+        userProfile={userProfile}
+      />
     </WebAppLayout>
   );
 }
+
+
+
 
 export default App;

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, X, Check, Activity, Target, Zap } from 'lucide-react';
+import { User, X } from 'lucide-react';
 import { calculateNutritionalTargets } from '../utils/healthCalculators';
 
 export const OnboardingModal = ({ isOpen, onClose, userProfile, onSaveProfile }) => {
@@ -38,6 +38,8 @@ export const OnboardingModal = ({ isOpen, onClose, userProfile, onSaveProfile })
             <X size={22} />
           </button>
         </div>
+
+
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           
