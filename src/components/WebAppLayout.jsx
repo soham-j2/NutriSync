@@ -1,5 +1,5 @@
 import React from 'react';
-import { LayoutDashboard, UtensilsCrossed, Activity, TrendingUp, User } from 'lucide-react';
+import { LayoutDashboard, UtensilsCrossed, Activity, TrendingUp, User, FileText } from 'lucide-react';
 
 export const WebAppLayout = ({ 
   activeTab, 
@@ -104,6 +104,14 @@ export const WebAppLayout = ({
             >
               <Activity size={15} />
               <span>Workout</span>
+            </button>
+
+            <button 
+              className={`web-tab-btn ${activeTab === 'summary' ? 'active' : ''}`}
+              onClick={() => setActiveTab('summary')}
+            >
+              <FileText size={15} />
+              <span>Daily Summary</span>
             </button>
 
             <button 

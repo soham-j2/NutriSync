@@ -7,6 +7,7 @@ import { ActivityLogger } from './components/ActivityLogger';
 import { HydrationTracker } from './components/HydrationTracker';
 import { SuggestionsSection } from './components/SuggestionsSection';
 import { TrendsDashboard } from './components/TrendsDashboard';
+import { DailySummary } from './components/DailySummary';
 import { OnboardingModal } from './components/OnboardingModal';
 import { computeDailyHealthIndex } from './utils/healthIndexEngine';
 import { DEMO_PRESETS } from './data/ifctFoodDatabase';
@@ -193,6 +194,25 @@ export function App() {
                     </div>
                   </div>
 
+                  <div 
+                    className="white-card white-card-hover"
+                    onClick={() => setActiveTab('summary')}
+                    style={{ cursor: 'pointer', gridColumn: 'span 2' }}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span className="chip chip-emerald">
+                        <Sparkles size={12} /> Daily Summary & Charts
+                      </span>
+                      <ArrowRight size={16} color="var(--accent-emerald)" />
+                    </div>
+                    <div style={{ fontSize: '20px', fontWeight: '800', color: 'var(--text-main)', marginTop: '8px' }}>
+                      View Complete Daily Health Report Card
+                    </div>
+                    <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                      Visual meal breakdown, macro comparison charts & 5-factor radar analysis
+                    </div>
+                  </div>
+
                 </div>
 
               </div>
@@ -217,6 +237,16 @@ export function App() {
             onAddActivity={handleAddActivity}
             onDeleteActivity={handleDeleteActivity}
             weightKg={userProfile.weight}
+          />
+        )}
+
+        {/* DAILY SUMMARY TAB */}
+        {activeTab === 'summary' && (
+          <DailySummary
+            currentAnalysis={currentAnalysis}
+            loggedMeals={loggedMeals}
+            loggedActivities={loggedActivities}
+            userProfile={userProfile}
           />
         )}
 
