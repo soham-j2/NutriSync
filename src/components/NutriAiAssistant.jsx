@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Sparkles, X, Send, Bot, User, Zap, RefreshCw } from 'lucide-react';
-import { generateAiResponse, QUICK_PROMPTS } from '../utils/aiNutritionEngine';
+import { Sparkles, X, Send, Bot, User, Zap, RefreshCw, Cpu } from 'lucide-react';
+import { callGeminiApi, QUICK_PROMPTS } from '../utils/aiNutritionEngine';
 
 /**
  * Custom lightweight Markdown Formatter for AI chat messages.
@@ -81,7 +81,7 @@ export const NutriAiAssistant = ({
 
   // Re-sync dynamic initial welcome message when opening
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && messages.length === 0) {
       const mealsCount = loggedMeals.length;
       const actCount = loggedActivities.length;
       const cals = healthAnalysis?.totals?.calories || 0;
@@ -89,15 +89,15 @@ export const NutriAiAssistant = ({
       const targetP = healthAnalysis?.targets?.targetProtein || 120;
       const score = healthAnalysis?.healthIndexScore || 75;
 
-      const welcomeText = `### 👋 Hello! I'm NutriAI, your personalized health & nutrition coach.
+      const welcomeText = `### 👋 Hello! I'm NutriAI powered by Google Gemini.
 
-I've analyzed your real live data for today:
+I've loaded your live health metrics for today:
 • **Health Index Score**: **${score}/100**
 • **Logged Meals**: **${mealsCount} items** (${cals} kcal consumed)
 • **Logged Workouts**: **${actCount} items** (${healthAnalysis?.totals?.burnedCalories || 0} kcal burned)
 • **Protein Progress**: **${protein}g** / ${targetP}g Target
 
-Click a quick prompt below or ask me any question about your real meals & workout data!`;
+Ask me any question about your real meals, macros, or customized diet plans!`;
 
       setMessages([
         {
@@ -108,7 +108,7 @@ Click a quick prompt below or ask me any question about your real meals & workou
         }
       ]);
     }
-  }, [isOpen, healthAnalysis, loggedMeals, loggedActivities]);
+  }, [isOpen, healthAnalysis, loggedMeals, loggedActivities, messages.length]);
 
   const scrollToBottom = () => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -122,7 +122,7 @@ Click a quick prompt below or ask me any question about your real meals & workou
 
   if (!isOpen) return null;
 
-  const handleSendMessage = (textToSend) => {
+  const handleSendMessage = async (textToSend) => {
     const query = textToSend || inputQuery;
     if (!query.trim()) return;
 
@@ -137,8 +137,8 @@ Click a quick prompt below or ask me any question about your real meals & workou
     setInputQuery('');
     setIsThinking(true);
 
-    setTimeout(() => {
-      const responseText = generateAiResponse(query, healthAnalysis, loggedMeals, loggedActivities, userProfile);
+    try {
+      const responseText = await callGeminiApi(query, healthAnalysis, loggedMeals, loggedActivities, userProfile);
       const aiMsg = {
         id: `ai_${Date.now()}`,
         sender: 'ai',
@@ -146,8 +146,11 @@ Click a quick prompt below or ask me any question about your real meals & workou
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
       setMessages(prev => [...prev, aiMsg]);
+    } catch (e) {
+      console.error('Error getting Gemini AI response:', e);
+    } finally {
       setIsThinking(false);
-    }, 500);
+    }
   };
 
   return (
@@ -206,8 +209,9 @@ Click a quick prompt below or ask me any question about your real meals & workou
                   color: '#34d399',
                   border: '1px solid rgba(52, 211, 153, 0.3)'
                 }}>
-                  REAL-DATA ACTIVE
+                  GEMINI 1.5 FLASH (LIVE)
                 </span>
+
               </div>
               <span style={{ fontSize: '11px', color: '#c7d2fe', display: 'block', marginTop: '1px' }}>
                 Evaluating {loggedMeals.length} meals | Health Index: <strong>{healthAnalysis?.healthIndexScore || 75}/100</strong>
