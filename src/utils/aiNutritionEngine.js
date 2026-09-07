@@ -9,7 +9,7 @@ export const QUICK_PROMPTS = [
   { id: 'hydration', text: 'Hydration & Water Goal' }
 ];
 
-const GEMINI_MODEL = 'gemini-1.5-flash';
+const GEMINI_MODEL = 'gemini-2.5-flash';
 const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
 /**
@@ -61,7 +61,7 @@ USER QUESTION: "${userQuery}"
 Give an intelligent, personalized, actionable answer using the real data above. Reference logged meals by name. Suggest specific Indian dish names. Be concise and motivating.`;
 
   try {
-    const res = await fetch(`${GEMINI_ENDPOINT}?key=${apiKey}`, {
+    const res = await fetch(`${GEMINI_ENDPOINT}?key=${encodeURIComponent(apiKey)}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }] })
