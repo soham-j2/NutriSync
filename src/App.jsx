@@ -39,7 +39,12 @@ export function App() {
 
   const [userProfile, setUserProfile] = useState(() => {
     const saved = localStorage.getItem('nutriloop_profile') || localStorage.getItem('nutrisync_profile');
-    return saved ? JSON.parse(saved) : DEFAULT_PROFILE;
+    const parsed = saved ? JSON.parse(saved) : DEFAULT_PROFILE;
+    // Migrate old default name to new default
+    if (parsed.name === 'Sazidur Rahman') {
+      parsed.name = 'Soham Jadhav';
+    }
+    return parsed;
   });
 
 
