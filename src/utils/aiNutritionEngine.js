@@ -256,7 +256,7 @@ export async function fetchNutritionFromAi(dishName) {
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
   const nameTrimmed = dishName.trim();
 
-  const promptText = `Given the Indian dish or meal name "${nameTrimmed}", return ONLY a raw valid JSON object (with NO markdown formatting, NO markdown backticks) containing accurate standard nutritional values for 1 standard serving/portion:
+  const promptText = `Given the meal or dish name "${nameTrimmed}", analyze its nutritional components and return ONLY a raw valid JSON object (with NO markdown formatting, NO markdown backticks):
 {
   "name": "${nameTrimmed}",
   "portion": "standard serving size (e.g. 1 bowl (200g) or 2 pcs)",
@@ -265,7 +265,7 @@ export async function fetchNutritionFromAi(dishName) {
   "carbs": 43.0,
   "fat": 4.2,
   "fiber": 4.5,
-  "isJunk": false,
+  "isJunk": boolean (MUST BE true IF the food is deep-fried, ultra-processed, fast food, instant noodles, sugary dessert/drink, or street fried snack like Samosa, Pakora, Maggi, Burger, Pizza, Chole Bhature, Vada Pav, Chips, Soda, Momos, Roll; otherwise false),
   "recommendation": "1-2 sentence scientific health tip or diet recommendation for eating this dish"
 }`;
 
@@ -292,7 +292,7 @@ export async function fetchNutritionFromAi(dishName) {
             fat: Number(parsed.fat) || 6,
             fiber: Number(parsed.fiber) || 3,
             isJunk: Boolean(parsed.isJunk),
-            recommendation: parsed.recommendation || `${nameTrimmed} provides balanced nutrition. Pair with salad or curd for fiber!`
+            recommendation: parsed.recommendation || `${nameTrimmed} provides standard energy. Pair with salad or curd for fiber!`
           };
         }
       }
@@ -310,6 +310,23 @@ export async function fetchNutritionFromAi(dishName) {
  */
 function estimateLocalNutrition(dishName) {
   const q = dishName.toLowerCase();
+
+  // Junk / Fast food detection keywords
+  const isJunkFood = q.match(/maggi|noodle|burger|pizza|fries|chips|samosa|pakora|kachori|bhature|vada\s*pav|pav\s*bhaji|roll|shawarma|momos|fried|soda|cola|cold\s*drink|sweet|jalebi|gulab\s*jamun|pastry|cake|biscuit/);
+
+  if (isJunkFood) {
+    return {
+      name: dishName,
+      portion: '1 serving',
+      calories: 330,
+      protein: 5.5,
+      carbs: 46.0,
+      fat: 14.5,
+      fiber: 1.5,
+      isJunk: true,
+      recommendation: '⚠️ AI classified this item as Junk / Ultra-processed fast food. Enjoy in moderation and stay well hydrated!'
+    };
+  }
 
   if (q.includes('khichdi') || q.includes('khichuri') || q.includes('dal rice')) {
     return {
@@ -364,20 +381,6 @@ function estimateLocalNutrition(dishName) {
       fiber: 0.5,
       isJunk: false,
       recommendation: 'Eggs deliver high bioavailable protein, Vitamin B12, and healthy choline for brain function.'
-    };
-  }
-
-  if (q.includes('maggi') || q.includes('noodle') || q.includes('burger') || q.includes('pizza') || q.includes('fries') || q.includes('samosa') || q.includes('pakora')) {
-    return {
-      name: dishName,
-      portion: '1 serving',
-      calories: 320,
-      protein: 6.0,
-      carbs: 48.0,
-      fat: 14.0,
-      fiber: 1.5,
-      isJunk: true,
-      recommendation: '⚠️ Ultra-processed / high-sodium item. Enjoy occasionally and drink extra water to balance sodium retention.'
     };
   }
 

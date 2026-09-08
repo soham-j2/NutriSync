@@ -780,13 +780,21 @@ export const MealLogger = ({
 
                 {/* Junk Food Checkbox */}
                 <div style={{ display: 'flex', alignItems: 'center', paddingTop: '16px' }}>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: '700', color: 'var(--accent-rose)', cursor: 'pointer' }}>
+                  <label style={{
+                    display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: '800',
+                    color: customForm.isJunk ? 'var(--accent-rose)' : 'var(--text-muted)',
+                    background: customForm.isJunk ? 'var(--accent-rose-bg)' : 'transparent',
+                    padding: customForm.isJunk ? '4px 8px' : '0',
+                    borderRadius: '8px',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease'
+                  }}>
                     <input
                       type="checkbox"
-                      checked={customForm.isJunk}
+                      checked={Boolean(customForm.isJunk)}
                       onChange={(e) => setCustomForm(prev => ({ ...prev, isJunk: e.target.checked }))}
                     />
-                    <span>Is Junk / Fast Food?</span>
+                    <span>{customForm.isJunk ? '⚠️ AI Flagged: Junk / Fast Food' : 'Is Junk / Fast Food?'}</span>
                   </label>
                 </div>
               </div>
