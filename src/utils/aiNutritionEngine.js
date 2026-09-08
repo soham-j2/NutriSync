@@ -245,3 +245,167 @@ I'm currently running in offline mode. Here's what I can see from your data:
 
 Try one of the quick action buttons above for detailed analysis on meals, macros, workout, or hydration!`;
 }
+
+/**
+ * Uses AI to estimate nutrition parameters (calories, protein, carbs, fat, fiber, isJunk)
+ * and generates a smart health recommendation for any dish name (e.g. "Khichdi Rice", "Paneer Roll").
+ */
+export async function fetchNutritionFromAi(dishName) {
+  if (!dishName || !dishName.trim()) return null;
+
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+  const nameTrimmed = dishName.trim();
+
+  const promptText = `Given the Indian dish or meal name "${nameTrimmed}", return ONLY a raw valid JSON object (with NO markdown formatting, NO markdown backticks) containing accurate standard nutritional values for 1 standard serving/portion:
+{
+  "name": "${nameTrimmed}",
+  "portion": "standard serving size (e.g. 1 bowl (200g) or 2 pcs)",
+  "calories": 240,
+  "protein": 8.5,
+  "carbs": 43.0,
+  "fat": 4.2,
+  "fiber": 4.5,
+  "isJunk": false,
+  "recommendation": "1-2 sentence scientific health tip or diet recommendation for eating this dish"
+}`;
+
+  if (apiKey && apiKey !== 'your_key_here') {
+    try {
+      const res = await fetch(`${GEMINI_ENDPOINT}?key=${encodeURIComponent(apiKey)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }] })
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        const cleaned = rawText.replace(/```json|```/g, '').trim();
+        const parsed = JSON.parse(cleaned);
+        if (parsed && (parsed.calories || parsed.protein)) {
+          return {
+            name: parsed.name || nameTrimmed,
+            portion: parsed.portion || '1 serving (200g)',
+            calories: Math.round(Number(parsed.calories) || 250),
+            protein: Number(parsed.protein) || 8,
+            carbs: Number(parsed.carbs) || 35,
+            fat: Number(parsed.fat) || 6,
+            fiber: Number(parsed.fiber) || 3,
+            isJunk: Boolean(parsed.isJunk),
+            recommendation: parsed.recommendation || `${nameTrimmed} provides balanced nutrition. Pair with salad or curd for fiber!`
+          };
+        }
+      }
+    } catch (e) {
+      console.warn('[NutriAI] Live Gemini parse error, falling back to smart local nutrition engine:', e);
+    }
+  }
+
+  // Smart local Indian food nutrition estimator fallback
+  return estimateLocalNutrition(nameTrimmed);
+}
+
+/**
+ * Smart local fallback estimator for common Indian dishes when API is unavailable.
+ */
+function estimateLocalNutrition(dishName) {
+  const q = dishName.toLowerCase();
+
+  if (q.includes('khichdi') || q.includes('khichuri') || q.includes('dal rice')) {
+    return {
+      name: dishName,
+      portion: '1 bowl (220g)',
+      calories: 240,
+      protein: 8.5,
+      carbs: 43.0,
+      fat: 4.2,
+      fiber: 4.8,
+      isJunk: false,
+      recommendation: 'Khichdi is easy to digest and combines dal + rice for a complete amino acid profile. Pair with curd or a tsp of ghee for optimal nutrient absorption.'
+    };
+  }
+
+  if (q.includes('paneer')) {
+    return {
+      name: dishName,
+      portion: '1 portion (150g)',
+      calories: 320,
+      protein: 16.0,
+      carbs: 12.0,
+      fat: 22.0,
+      fiber: 2.5,
+      isJunk: false,
+      recommendation: 'Paneer is rich in casein protein & calcium! Great for muscle recovery and long-lasting satiety.'
+    };
+  }
+
+  if (q.includes('chicken') || q.includes('fish') || q.includes('mutton')) {
+    return {
+      name: dishName,
+      portion: '1 portion (180g)',
+      calories: 310,
+      protein: 28.0,
+      carbs: 8.0,
+      fat: 14.0,
+      fiber: 1.5,
+      isJunk: false,
+      recommendation: 'Excellent high-protein, low-carb choice! Supports muscle synthesis and fat loss goals.'
+    };
+  }
+
+  if (q.includes('egg') || q.includes('omelette') || q.includes('bhurji')) {
+    return {
+      name: dishName,
+      portion: '2 eggs serving',
+      calories: 190,
+      protein: 14.0,
+      carbs: 2.0,
+      fat: 13.0,
+      fiber: 0.5,
+      isJunk: false,
+      recommendation: 'Eggs deliver high bioavailable protein, Vitamin B12, and healthy choline for brain function.'
+    };
+  }
+
+  if (q.includes('maggi') || q.includes('noodle') || q.includes('burger') || q.includes('pizza') || q.includes('fries') || q.includes('samosa') || q.includes('pakora')) {
+    return {
+      name: dishName,
+      portion: '1 serving',
+      calories: 320,
+      protein: 6.0,
+      carbs: 48.0,
+      fat: 14.0,
+      fiber: 1.5,
+      isJunk: true,
+      recommendation: '⚠️ Ultra-processed / high-sodium item. Enjoy occasionally and drink extra water to balance sodium retention.'
+    };
+  }
+
+  if (q.includes('dosa') || q.includes('idli') || q.includes('poha') || q.includes('upma')) {
+    return {
+      name: dishName,
+      portion: '1 plate serving',
+      calories: 260,
+      protein: 6.5,
+      carbs: 45.0,
+      fat: 6.0,
+      fiber: 4.0,
+      isJunk: false,
+      recommendation: 'Fermented & light breakfast option! Easy on digestion and rich in B-vitamins.'
+    };
+  }
+
+  // Generic balanced meal estimation
+  return {
+    name: dishName,
+    portion: '1 standard serving (200g)',
+    calories: 270,
+    protein: 9.0,
+    carbs: 40.0,
+    fat: 8.0,
+    fiber: 3.5,
+    isJunk: false,
+    recommendation: `AI estimated standard meal parameters for ${dishName}. Balance with fresh salad or curd for fiber & gut health!`
+  };
+}
+

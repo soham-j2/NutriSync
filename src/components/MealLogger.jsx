@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Plus, Search, Trash2, Utensils, AlertTriangle, Check, Sparkles, Filter, X, PlusCircle } from 'lucide-react';
+import { Plus, Search, Trash2, Utensils, AlertTriangle, Check, Sparkles, Filter, X, PlusCircle, Loader2, Lightbulb } from 'lucide-react';
 import { IFCT_FOOD_DATABASE } from '../data/ifctFoodDatabase';
+import { fetchNutritionFromAi } from '../utils/aiNutritionEngine';
 
 export const MealLogger = ({
   loggedMeals,
@@ -15,6 +16,8 @@ export const MealLogger = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTag, setSelectedTag] = useState('All');
   const [selectedQty, setSelectedQty] = useState(1);
+  const [isAiFetching, setIsAiFetching] = useState(false);
+  const [aiRecommendation, setAiRecommendation] = useState('');
 
   // Custom food form state
   const [customForm, setCustomForm] = useState({
@@ -28,6 +31,38 @@ export const MealLogger = ({
     fiber: '',
     isJunk: false
   });
+
+  const handleAutoFillWithAi = async (dishNameToFetch) => {
+    const name = dishNameToFetch || customForm.name;
+    if (!name || !name.trim()) return;
+
+    setIsAiFetching(true);
+    setAiRecommendation('');
+
+    try {
+      const data = await fetchNutritionFromAi(name);
+      if (data) {
+        setCustomForm(prev => ({
+          ...prev,
+          name: data.name || name,
+          portion: data.portion || prev.portion,
+          calories: data.calories !== undefined ? String(data.calories) : prev.calories,
+          protein: data.protein !== undefined ? String(data.protein) : prev.protein,
+          carbs: data.carbs !== undefined ? String(data.carbs) : prev.carbs,
+          fat: data.fat !== undefined ? String(data.fat) : prev.fat,
+          fiber: data.fiber !== undefined ? String(data.fiber) : prev.fiber,
+          isJunk: Boolean(data.isJunk)
+        }));
+        if (data.recommendation) {
+          setAiRecommendation(data.recommendation);
+        }
+      }
+    } catch (err) {
+      console.error('Error fetching AI nutrition:', err);
+    } finally {
+      setIsAiFetching(false);
+    }
+  };
 
   const mealSlots = ['Breakfast', 'Lunch', 'Dinner', 'Snacks'];
 
@@ -366,13 +401,15 @@ export const MealLogger = ({
                   <div>No matching items found in food database.</div>
                   <button
                     className="btn-purple"
-                    style={{ marginTop: '12px', padding: '8px 16px', fontSize: '12px' }}
+                    style={{ marginTop: '12px', padding: '8px 16px', fontSize: '12px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
                     onClick={() => {
-                      setCustomForm(prev => ({ ...prev, name: searchQuery, category: activeModalSlot }));
+                      setCustomForm(prev => ({ ...prev, name: searchQuery, category: activeModalSlot || 'Breakfast' }));
                       setShowCustomModal(true);
+                      handleAutoFillWithAi(searchQuery);
                     }}
                   >
-                    + Create "{searchQuery}" as Custom Dish
+                    <Sparkles size={14} />
+                    <span>✨ Auto-Fetch "{searchQuery}" with AI & Log</span>
                   </button>
                 </div>
               ) : (
@@ -475,17 +512,59 @@ export const MealLogger = ({
             {/* Custom Dish Form */}
             <form onSubmit={handleCreateCustomFoodSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
               
-              {/* Dish Name */}
+              {/* Dish Name + AI Auto Fill Button */}
               <div>
-                <label style={{ fontSize: '12px', fontWeight: '700', color: 'var(--text-main)', display: 'block', marginBottom: '4px' }}>
-                  Dish Name *
-                </label>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                  <label style={{ fontSize: '12px', fontWeight: '700', color: 'var(--text-main)' }}>
+                    Dish Name *
+                  </label>
+
+                  <button
+                    type="button"
+                    disabled={!customForm.name.trim() || isAiFetching}
+                    onClick={() => handleAutoFillWithAi()}
+                    style={{
+                      background: 'linear-gradient(135deg, #7C5CBF 0%, #9575CD 100%)',
+                      color: '#ffffff',
+                      border: 'none',
+                      padding: '5px 12px',
+                      borderRadius: '16px',
+                      fontSize: '11px',
+                      fontWeight: '700',
+                      cursor: (!customForm.name.trim() || isAiFetching) ? 'default' : 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '5px',
+                      opacity: (!customForm.name.trim() || isAiFetching) ? 0.6 : 1,
+                      boxShadow: '0 2px 8px rgba(124, 92, 191, 0.25)',
+                      transition: 'all 0.2s ease'
+                    }}
+                  >
+                    {isAiFetching ? (
+                      <>
+                        <Loader2 size={12} className="spin-icon" />
+                        <span>AI Fetching Macros...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles size={12} color="#ffffff" />
+                        <span>✨ Auto-Fill with AI</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Mom's Paneer Paratha, Whey Protein Shake..."
+                  placeholder="e.g. Khichdi Rice, Paneer Paratha, Oats Porridge..."
                   value={customForm.name}
                   onChange={(e) => setCustomForm(prev => ({ ...prev, name: e.target.value }))}
+                  onBlur={() => {
+                    if (customForm.name.trim() && !customForm.calories && !isAiFetching) {
+                      handleAutoFillWithAi();
+                    }
+                  }}
                   style={{
                     width: '100%',
                     padding: '10px 12px',
@@ -499,6 +578,32 @@ export const MealLogger = ({
                   }}
                 />
               </div>
+
+              {/* AI Recommendation Banner if fetched */}
+              {aiRecommendation && (
+                <div style={{
+                  padding: '12px 14px',
+                  background: 'linear-gradient(135deg, rgba(124, 92, 191, 0.08) 0%, rgba(16, 185, 129, 0.08) 100%)',
+                  border: '1px solid var(--border-subtle)',
+                  borderRadius: '12px',
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: '10px',
+                  animation: 'fadeIn 0.2s ease-out'
+                }}>
+                  <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'var(--primary-purple)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', flexShrink: 0 }}>
+                    <Lightbulb size={15} />
+                  </div>
+                  <div>
+                    <div style={{ fontSize: '11px', fontWeight: '800', color: 'var(--primary-purple)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                      NutriAI Health Recommendation
+                    </div>
+                    <div style={{ fontSize: '12px', color: 'var(--text-main)', marginTop: '2px', lineHeight: '1.4', fontWeight: '500' }}>
+                      {aiRecommendation}
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Meal Slot Category & Portion */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
