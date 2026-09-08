@@ -15,7 +15,7 @@ import { DEMO_PRESETS } from './data/ifctFoodDatabase';
 import { Utensils, Activity, Sparkles, ArrowRight } from 'lucide-react';
 
 const DEFAULT_PROFILE = {
-  name: 'Sazidur Rahman',
+  name: 'Soham Jadhav',
   age: 21,
   gender: 'male',
   height: 175,
