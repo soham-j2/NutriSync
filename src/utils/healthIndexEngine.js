@@ -4,8 +4,10 @@
 import { IFCT_FOOD_DATABASE, EXERCISE_ACTIVITIES } from '../data/ifctFoodDatabase';
 import { calculateNutritionalTargets, calculateActivityBurn } from './healthCalculators';
 
-export const computeDailyHealthIndex = (loggedMeals = [], loggedActivities = [], waterGlasses = 0, userProfile = {}) => {
+export const computeDailyHealthIndex = (loggedMeals = [], loggedActivities = [], waterGlasses = 0, userProfile = {}, customFoods = []) => {
   const targets = calculateNutritionalTargets(userProfile);
+
+  const combinedDatabase = [...customFoods, ...IFCT_FOOD_DATABASE];
 
   // 1. Aggregate nutrients from logged meals
   let totalCalories = 0;
@@ -18,17 +20,27 @@ export const computeDailyHealthIndex = (loggedMeals = [], loggedActivities = [],
   let junkItemCount = 0;
 
   loggedMeals.forEach(entry => {
-    const food = IFCT_FOOD_DATABASE.find(f => f.id === entry.foodId);
+    const food = combinedDatabase.find(f => f.id === entry.foodId);
+    const qty = Number(entry.qty) || 1;
     if (food) {
-      const qty = Number(entry.qty) || 1;
       totalCalories += food.calories * qty;
       totalProtein += food.protein * qty;
       totalCarbs += food.carbs * qty;
       totalFat += food.fat * qty;
-      totalFiber += food.fiber * qty;
-      totalSodium += food.sodium * qty;
-      totalSugar += food.sugar * qty;
+      totalFiber += (food.fiber || 0) * qty;
+      totalSodium += (food.sodium || 0) * qty;
+      totalSugar += (food.sugar || 0) * qty;
       if (food.isJunk) junkItemCount += qty;
+    } else if (entry.calories !== undefined) {
+      // Direct custom entry values
+      totalCalories += (entry.calories || 0);
+      totalProtein += (entry.protein || 0);
+      totalCarbs += (entry.carbs || 0);
+      totalFat += (entry.fat || 0);
+      totalFiber += (entry.fiber || 0);
+      totalSodium += (entry.sodium || 0);
+      totalSugar += (entry.sugar || 0);
+      if (entry.isJunk) junkItemCount += qty;
     }
   });
 

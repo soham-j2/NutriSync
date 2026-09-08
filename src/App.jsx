@@ -46,6 +46,11 @@ export function App() {
 
 
 
+  const [customFoods, setCustomFoods] = useState(() => {
+    const saved = localStorage.getItem('nutriloop_custom_foods');
+    return saved ? JSON.parse(saved) : [];
+  });
+
   const [loggedMeals, setLoggedMeals] = useState(() => {
     const saved = localStorage.getItem('nutriloop_meals') || localStorage.getItem('nutrisync_meals');
     return saved ? JSON.parse(saved) : ensureUniqueIds(DEMO_PRESETS.healthy.meals);
@@ -66,6 +71,10 @@ export function App() {
   }, [userProfile]);
 
   useEffect(() => {
+    localStorage.setItem('nutriloop_custom_foods', JSON.stringify(customFoods));
+  }, [customFoods]);
+
+  useEffect(() => {
     localStorage.setItem('nutriloop_meals', JSON.stringify(loggedMeals));
   }, [loggedMeals]);
 
@@ -81,7 +90,8 @@ export function App() {
     loggedMeals,
     loggedActivities,
     waterGlasses,
-    userProfile
+    userProfile,
+    customFoods
   );
 
   const triggerCelebration = () => {
@@ -97,6 +107,20 @@ export function App() {
     setLoggedActivities(ensureUniqueIds(preset.activities));
     setWaterGlasses(preset.waterGlasses);
     if (preset.meals.length > 0) triggerCelebration();
+  };
+
+  const handleAddCustomFood = (newFood) => {
+    const foodItem = {
+      ...newFood,
+      id: `custom_food_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
+      isCustom: true
+    };
+    setCustomFoods(prev => [foodItem, ...prev]);
+    return foodItem;
+  };
+
+  const handleDeleteCustomFood = (foodId) => {
+    setCustomFoods(prev => prev.filter(f => f.id !== foodId));
   };
 
   const handleAddMeal = (meal) => {
@@ -229,6 +253,9 @@ export function App() {
             loggedMeals={loggedMeals}
             onAddMeal={handleAddMeal}
             onDeleteMeal={handleDeleteMeal}
+            customFoods={customFoods}
+            onAddCustomFood={handleAddCustomFood}
+            onDeleteCustomFood={handleDeleteCustomFood}
           />
         )}
 
