@@ -5,8 +5,6 @@ import { HealthIndexGauge } from './components/HealthIndexGauge';
 import { MealLogger } from './components/MealLogger';
 import { ActivityLogger } from './components/ActivityLogger';
 import { HydrationTracker } from './components/HydrationTracker';
-import { SuggestionsSection } from './components/SuggestionsSection';
-import { TrendsDashboard } from './components/TrendsDashboard';
 import { DailySummary } from './components/DailySummary';
 import { OnboardingModal } from './components/OnboardingModal';
 import { NutriAiAssistant } from './components/NutriAiAssistant';
@@ -277,11 +275,6 @@ export function App() {
             loggedActivities={loggedActivities}
             userProfile={userProfile}
           />
-        )}
-
-        {/* TRENDS TAB */}
-        {activeTab === 'trends' && (
-          <TrendsDashboard currentAnalysis={currentAnalysis} />
         )}
 
       </div>

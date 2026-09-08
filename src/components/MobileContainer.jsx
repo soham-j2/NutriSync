@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { LayoutDashboard, UtensilsCrossed, Activity, TrendingUp, User, Sparkles, Wifi, Battery, Signal } from 'lucide-react';
+import { LayoutDashboard, UtensilsCrossed, Activity, TrendingUp, User, Sparkles, Wifi, Battery, Signal, FileText } from 'lucide-react';
 import { DEMO_PRESETS } from '../data/ifctFoodDatabase';
 
 export const MobileContainer = ({ 
@@ -186,13 +186,13 @@ export const MobileContainer = ({
           </button>
 
           <button 
-            className={`nav-tab-btn ${activeTab === 'trends' ? 'active' : ''}`}
-            onClick={() => setActiveTab('trends')}
+            className={`nav-tab-btn ${activeTab === 'summary' ? 'active' : ''}`}
+            onClick={() => setActiveTab('summary')}
           >
             <div className="nav-icon-wrapper">
-              <TrendingUp size={20} />
+              <FileText size={20} />
             </div>
-            <span>Trends</span>
+            <span>Summary</span>
           </button>
 
           <button 

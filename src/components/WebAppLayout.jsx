@@ -119,15 +119,7 @@ export const WebAppLayout = ({
               onClick={() => setActiveTab('summary')}
             >
               <FileText size={15} />
-              <span>Summary</span>
-            </button>
-
-            <button 
-              className={`web-tab-btn ${activeTab === 'trends' ? 'active' : ''}`}
-              onClick={() => setActiveTab('trends')}
-            >
-              <TrendingUp size={15} />
-              <span>Trends</span>
+              <span>Summary & Trends</span>
             </button>
           </nav>
 
