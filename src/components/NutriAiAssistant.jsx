@@ -93,7 +93,7 @@ export const NutriAiAssistant = ({
       const targetWater = healthAnalysis?.targets?.targetWaterGlasses ?? 8;
 
       const userName = userProfile?.name?.trim() ? userProfile.name.split(' ')[0] : 'there';
-      const welcomeText = `### 👋 Hello, ${userName}! I'm NutriAI — your personal health coach.
+      const welcomeText = `### 👆 Hello, ${userName}! I'm NutriAI — your personal health coach.
 
 I've loaded your live health metrics for today:
 • **Health Index Score**: **${score}/100**
